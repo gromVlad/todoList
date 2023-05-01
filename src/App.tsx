@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 import { Tasktype, Todolist } from "./todolist/todolist";
 import { v1 } from "uuid";
-import { AddItemForm } from './todolist/components/addItem/addItemForm';
+import { AddItemForm } from "./todolist/components/addItem/addItemForm";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Container, Grid } from "@mui/material";
 
 //v1 -random id values
 
-export type FitervalueType = "all" | "complited" | "active";
+export type FitervalueType = "all" | "completed" | "active";
 
 //type todolists
 type TodolistsType = {
@@ -45,9 +53,6 @@ function App() {
 
   //fun remove task
   function removetask(id: string, idTodo: string) {
-    // let todolisttask = tasks[idTodo];
-    // tasks[idTodo] = todolisttask.filter((el) => el.id !== id);
-    // setTasks({ ...tasks });
     setTasks({
       ...tasks,
       [idTodo]: tasks[idTodo].filter((el) => el.id !== id),
@@ -56,11 +61,6 @@ function App() {
 
   //return new value in state
   function changeFilter(value: FitervalueType, id: string) {
-    // let todolist = todolists.find((el) => el.id === id);
-    // if (todolist) {
-    //   todolist.filter = value;
-    // }
-    // setTodolists([...todolists]);
     setTodolists(
       todolists.map((el) => (el.id === id ? { ...el, filter: value } : el))
     );
@@ -69,20 +69,11 @@ function App() {
   //add new task
   const newAddTask = (value: string, id: string) => {
     const newTask = { id: v1(), title: value, isDone: false };
-    // let todolisttask = tasks[id];
-    // tasks[id] = [newTask, ...todolisttask];
-    // setTasks({ ...tasks });
     setTasks({ ...tasks, [id]: [newTask, ...tasks[id]] });
   };
 
   //fun change chekbox
   const changeChekBox = (id: string, valueBoolean: boolean, idTodo: string) => {
-    // let todolisttask = tasks[idTodo];
-    // let task = todolisttask.find((el) => el.id === id);
-    // if (task) {
-    //   task.isDone = valueBoolean;
-    // }
-    // setTasks({ ...tasks });
     setTasks({
       ...tasks,
       [idTodo]: tasks[idTodo].map((el) =>
@@ -100,14 +91,22 @@ function App() {
 
   //change task title
   const changeTaskTitle = (id: string, value: string, idTodo: string) => {
-    setTasks({...tasks,[idTodo]: tasks[idTodo].map((el) =>el.id === id ? { ...el, title: value } : el),});
+    setTasks({
+      ...tasks,
+      [idTodo]: tasks[idTodo].map((el) =>
+        el.id === id ? { ...el, title: value } : el
+      ),
+    });
   };
 
   //change task title
   const changeTodoTitle = (value: string, idTodo: string) => {
-    setTodolists([...todolists.map(el => el.id === idTodo ? {...el,title:value} : el)])
+    setTodolists([
+      ...todolists.map((el) =>
+        el.id === idTodo ? { ...el, title: value } : el
+      ),
+    ]);
   };
-
 
   const addTodolist = (title: string) => {
     let todolistID = v1();
@@ -122,7 +121,7 @@ function App() {
     switch (filter) {
       case "active":
         return todo.filter((el) => el.isDone === true);
-      case "complited":
+      case "completed":
         return todo.filter((el) => el.isDone === false);
       default:
         return todo;
@@ -131,27 +130,63 @@ function App() {
 
   return (
     <div className="App">
-      <AddItemForm newAdd={addTodolist} />
-      {todolists.map((todo) => {
-        let tastInComponents = getFilterTodo(todo.filter, tasks[todo.id]);
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" sx={{ backgroundColor: "#4caf50" }}>
+          <Toolbar style={{ textAlign: "center", color: "black" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              style={{ color: "black" }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              TodoList
+            </Typography>
+            <Button color="inherit">Login</Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
 
-        return (
-          <Todolist
-            key={todo.id}
-            id={todo.id}
-            title={todo.title}
-            task={tastInComponents}
-            removetask={removetask}
-            changeFilter={changeFilter}
-            newAddTask={newAddTask}
-            changeChekBox={changeChekBox}
-            filter={todo.filter}
-            deleteTodolist={deleteTodolist}
-            changeTaskTitle={changeTaskTitle}
-            changeTodoTitle={changeTodoTitle}
-          />
-        );
-      })}
+      <Container fixed>
+        <Grid
+          container
+          style={{ margin: "10px", borderBottom: "2px solid black" }}
+        >
+          <h2>Add Todolist</h2>
+          <AddItemForm newAdd={addTodolist} />
+        </Grid>
+        <Grid
+          container
+          spacing={8}
+        >
+          {todolists.map((todo) => {
+            let tastInComponents = getFilterTodo(todo.filter, tasks[todo.id]);
+
+            return (
+              <Grid item>
+                <Todolist
+                  key={todo.id}
+                  id={todo.id}
+                  title={todo.title}
+                  task={tastInComponents}
+                  removetask={removetask}
+                  changeFilter={changeFilter}
+                  newAddTask={newAddTask}
+                  changeChekBox={changeChekBox}
+                  filter={todo.filter}
+                  deleteTodolist={deleteTodolist}
+                  changeTaskTitle={changeTaskTitle}
+                  changeTodoTitle={changeTodoTitle}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
     </div>
   );
 }

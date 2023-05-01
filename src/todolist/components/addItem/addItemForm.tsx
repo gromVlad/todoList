@@ -1,11 +1,14 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import style from "./addItemForm.module.css";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
+import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
 
-type AddItemForm = {
+
+
+type AddItemFormProps= {
   newAdd: (value: string) => void;
 };
 
-export const AddItemForm = (props: AddItemForm) => {
+export const AddItemForm = (props: AddItemFormProps) => {
   //CREATE local use state for input
   let [valueInput, setValueInput] = useState("");
 
@@ -35,20 +38,34 @@ export const AddItemForm = (props: AddItemForm) => {
 
   return (
     <div>
-      <input
-        placeholder="Enter task"
+      <TextField
+        placeholder="Enter"
         value={valueInput}
         onChange={funAddValueInput}
         onKeyDown={funKeyHundler}
-        className={error ? style.error : ""}
+        error={!!error}
+        helperText={error ? "Task title is required" : ""}
+        style={{ margin: "10px",}}
       />
       {/* disabled if length < = 0 */}
-      <button onClick={NewTaskAdd} disabled={valueInput.length === 0}>
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={NewTaskAdd}
+        style={{
+          color: "black",
+          fontSize: "25px",
+          borderRadius: "10px",
+          marginTop: "13px",
+          backgroundColor: "rgb(74, 163, 89)",
+          padding:"0px"
+        }}
+      >
         +
-      </button>
+      </Button>
       {valueInput.length > 10 && <div>Текст слишком длинный</div>}
       {/* add text info error */}
-      {error && <div className={style["error-message"]}>{error}</div>}
     </div>
   );
 };
