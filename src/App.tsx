@@ -10,14 +10,14 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Paper } from "@mui/material";
 
 //v1 -random id values
 
 export type FitervalueType = "all" | "completed" | "active";
 
 //type todolists
-type TodolistsType = {
+export type TodolistsType = {
   id: string;
   title: string;
   filter: FitervalueType;
@@ -51,19 +51,13 @@ function App() {
     ],
   });
 
+  // task----------------------------
   //fun remove task
   function removetask(id: string, idTodo: string) {
     setTasks({
       ...tasks,
       [idTodo]: tasks[idTodo].filter((el) => el.id !== id),
     });
-  }
-
-  //return new value in state
-  function changeFilter(value: FitervalueType, id: string) {
-    setTodolists(
-      todolists.map((el) => (el.id === id ? { ...el, filter: value } : el))
-    );
   }
 
   //add new task
@@ -82,13 +76,6 @@ function App() {
     });
   };
 
-  //delete todolist
-  const deleteTodolist = (idTodo: string) => {
-    setTodolists(todolists.filter((el) => el.id !== idTodo));
-    delete tasks[idTodo];
-    setTasks({ ...tasks });
-  };
-
   //change task title
   const changeTaskTitle = (id: string, value: string, idTodo: string) => {
     setTasks({
@@ -97,6 +84,15 @@ function App() {
         el.id === id ? { ...el, title: value } : el
       ),
     });
+  };
+  //------------task
+
+  //--todolist---------------------
+  //delete todolist
+  const deleteTodolist = (idTodo: string) => {
+    setTodolists(todolists.filter((el) => el.id !== idTodo));
+    delete tasks[idTodo];
+    setTasks({ ...tasks });
   };
 
   //change task title
@@ -116,6 +112,14 @@ function App() {
     ]);
     setTasks({ ...tasks, [todolistID]: [] });
   };
+
+  //return new value in state
+  function changeFilter(value: FitervalueType, id: string) {
+    setTodolists(
+      todolists.map((el) => (el.id === id ? { ...el, filter: value } : el))
+    );
+  }
+  //--todolist---------------------
 
   const getFilterTodo = (filter: FitervalueType, todo: Tasktype[]) => {
     switch (filter) {
@@ -159,29 +163,28 @@ function App() {
           <h2>Add Todolist</h2>
           <AddItemForm newAdd={addTodolist} />
         </Grid>
-        <Grid
-          container
-          spacing={8}
-        >
+        <Grid container spacing={8}>
           {todolists.map((todo) => {
             let tastInComponents = getFilterTodo(todo.filter, tasks[todo.id]);
 
             return (
               <Grid item>
-                <Todolist
-                  key={todo.id}
-                  id={todo.id}
-                  title={todo.title}
-                  task={tastInComponents}
-                  removetask={removetask}
-                  changeFilter={changeFilter}
-                  newAddTask={newAddTask}
-                  changeChekBox={changeChekBox}
-                  filter={todo.filter}
-                  deleteTodolist={deleteTodolist}
-                  changeTaskTitle={changeTaskTitle}
-                  changeTodoTitle={changeTodoTitle}
-                />
+                <Paper>
+                  <Todolist
+                    key={todo.id}
+                    id={todo.id}
+                    title={todo.title}
+                    task={tastInComponents}
+                    removetask={removetask}
+                    changeFilter={changeFilter}
+                    newAddTask={newAddTask}
+                    changeChekBox={changeChekBox}
+                    filter={todo.filter}
+                    deleteTodolist={deleteTodolist}
+                    changeTaskTitle={changeTaskTitle}
+                    changeTodoTitle={changeTodoTitle}
+                  />
+                </Paper>
               </Grid>
             );
           })}

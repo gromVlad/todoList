@@ -52,7 +52,7 @@ export function Todolist(props: todolistType) {
 
 
   return (
-    <div style={{borderBottom: "2px solid black", margin:'10px' }}>
+    <div style={{borderBottom: "2px solid black", margin:'10px'}}>
       <div>
         <EditableSpan title={props.title} changeSpan={changeTodoTitle} />
         <StyledButton variant="contained" onClick={funRemoveTodolist}>
@@ -88,11 +88,6 @@ export function Todolist(props: todolistType) {
                   key={element.id}
                   className={element.isDone === true ? style["is-done"] : ""}
                 >
-                  {/* <input
-                    type="checkbox"
-                    checked={element.isDone}
-                    onChange={funChangeChekbox}
-                  /> */}
                   <Checkbox
                     checked={element.isDone}
                     onChange={funChangeChekbox}
