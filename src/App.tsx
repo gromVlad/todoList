@@ -104,6 +104,7 @@ function App() {
     ]);
   };
 
+  //add new todolist
   const addTodolist = (title: string) => {
     let todolistID = v1();
     setTodolists([

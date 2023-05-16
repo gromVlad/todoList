@@ -2,14 +2,15 @@ import { v1 } from "uuid";
 import { FitervalueType, TodolistsType } from "../App";
 
 
-type RemoveType = {
+export type RemoveType = {
   type: "REMOVE-TODOLIST";
   id:string
 };
 
-type AddTodoType = {
+export type AddTodoType = {
   type: "ADD-TODOLIST";
   title: string;
+  idTodo:string
 };
 
 type ChangeTodoTitleType = {
@@ -35,7 +36,7 @@ export const userReducerTodolist = (state: TodolistsType[], action: ActionType):
     case "REMOVE-TODOLIST":
       return state.filter((el) => el.id !== action.id);
     case "ADD-TODOLIST":
-      return [...state, { id: v1(), title: action.title, filter: "all" }];
+      return [...state, { id: action.idTodo, title: action.title, filter: "all" }];
     case "CHANGE-TODOLIST-TITLE":
       return state.map((el) =>
         el.id === action.id ? { ...el, title: action.title } : el
@@ -54,7 +55,7 @@ export const RemoveTodolistAC = (todolistId: string): RemoveType => {
 }
 
 export const AddTodoTypeAC = (title: string): AddTodoType => {
-  return { type: "ADD-TODOLIST", title: title };
+  return { type: "ADD-TODOLIST", title: title, idTodo:v1() };
 };
 
 export const ChangeTodoTitleAC = (todolistId: string,title: string): ChangeTodoTitleType => {
