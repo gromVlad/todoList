@@ -1,13 +1,28 @@
 import { v1 } from "uuid";
 import { TaskType} from "../App";
-import { AddTodoType, RemoveType } from "./reduser_todolist";
+import { AddTodoType, RemoveType, todolistID1, todolistID2 } from "./reduser_todolist";
 
 const REMOVE_TASK = "REMOVE_TASK";
 const ADD_TASK = "ADD_TASK";
 const CHANGE_TASK_ISDONE = "CHANGE_TASK_ISDONE";
 const CHANGE_TASK_TITLE = "CHANGE_TASK_TITLE";
 
-export const userReducerTask = (state: TaskType, action: ActionTypeTasK): TaskType => {
+const initState: TaskType = {
+  [todolistID1]: [
+    { id: v1(), title: "HTML&CSS", isDone: true },
+    { id: v1(), title: "JS", isDone: true },
+    { id: v1(), title: "ReactJS", isDone: false },
+  ],
+  [todolistID2]: [
+    { id: v1(), title: "Rest API", isDone: true },
+    { id: v1(), title: "GraphQL", isDone: false },
+  ],
+};
+
+export const userReducerTask = (
+  state: TaskType = initState,
+  action: ActionTypeTasK
+): TaskType => {
   switch (action.type) {
     case REMOVE_TASK:
       return {
@@ -41,11 +56,11 @@ export const userReducerTask = (state: TaskType, action: ActionTypeTasK): TaskTy
         [action.idTodo]: [],
       };
     case "REMOVE-TODOLIST":
-      const copyState = {...state}
+      const copyState = { ...state };
       delete copyState[action.id];
       return { ...copyState };
     default:
-      throw new Error("I don't understand this type");
+      return state;
   }
 };
 
@@ -73,8 +88,8 @@ export const changeTacIsDonekAC = (id: string, valueBoolean: boolean, idTodo: st
   return {
     type: CHANGE_TASK_ISDONE,
     box: {
-      valueBoolean,
       id,
+      valueBoolean,
       idTodo,
     },
   } as const;
