@@ -1,5 +1,9 @@
 # Getting Started with Create React App
 
+[yarn run deploy]
+
+My deploy  https://gromvlad.github.io/todoList/
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
