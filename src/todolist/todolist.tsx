@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, {  memo, useCallback } from "react";
 import { FitervalueType } from "../App";
 import style from './todolist.module.css'
 import { AddItemForm } from "./components/addItem/addItemForm";
@@ -6,7 +6,7 @@ import { EditableSpan } from "./components/EditableSpan/EditableSpan";
 import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Checkbox from "@mui/material/Checkbox";
+import { TaskItem } from "./components/taskItem/taskItem";
 
 export type Tasktype = {
   id: string;
@@ -17,7 +17,7 @@ export type Tasktype = {
 
 type todolistType = {
   title: string;
-  task: Tasktype[];
+  taskTodo: Tasktype[];
   id: string;
   removetask: (id: string, idtodo: string) => void;
   changeFilter: (value: FitervalueType, id: string) => void;
@@ -29,11 +29,28 @@ type todolistType = {
   changeTodoTitle: (value: string, idTodo: string) => void;
 };
 
-export function Todolist(props: todolistType) {
+export const Todolist = memo((props: todolistType) => {
+
+   const getFilterTodo = (filter: FitervalueType, todo: Tasktype[]) => {
+     switch (filter) {
+       case "active":
+         return todo.filter((el) => el.isDone === true);
+       case "completed":
+         return todo.filter((el) => el.isDone === false);
+       default:
+         return todo;
+     }
+   };
+
+   const task = getFilterTodo(props.filter,props.taskTodo)
+
   //fun change value for button
-  const changeValueButton = (value: FitervalueType,id:string) => {
-    props.changeFilter(value,id);
-  };
+  const changeValueButton = useCallback(
+    (value: FitervalueType, id: string) => {
+      props.changeFilter(value, id);
+    },
+    [props.changeFilter]
+  );
 
   //fun delete Todolist
   const funRemoveTodolist = () =>{
@@ -41,14 +58,20 @@ export function Todolist(props: todolistType) {
   }
 
   //add new task
-  const newAddtaskOnValue = (value:string) => {
-    props.newAddTask(value, props.id)
-  }
+  const newAddtaskOnValue = useCallback(
+    (value: string) => {
+      props.newAddTask(value, props.id);
+    },
+    [props.newAddTask, props.id]
+  );
 
   //change todo title
-  const changeTodoTitle = (value:string) => {
-    props.changeTodoTitle(value,props.id)
-  }
+  const changeTodoTitle = useCallback(
+    (value: string) => {
+      props.changeTodoTitle(value, props.id);
+    },
+    [props.changeTodoTitle, props.id]
+  );
 
 
   return (
@@ -62,44 +85,15 @@ export function Todolist(props: todolistType) {
 
         {/* ------map-------*/}
         <div>
-          {props.task.map((element) => {
-            //fun removetask in map
-            const funRemoveTask = () => {
-              props.removetask(element.id, props.id);
-            };
-
-            //fun change checkbox in map
-            const funChangeChekbox = (event: ChangeEvent<HTMLInputElement>) => {
-              props.changeChekBox(
-                element.id,
-                event.currentTarget.checked,
-                props.id
-              );
-            };
-
-            //change task Title in map
-            const changeSpan = (value: string) => {
-              props.changeTaskTitle(element.id, value, props.id);
-            };
-
-            return (
-              <>
-                <div
-                  key={element.id}
-                  className={element.isDone === true ? style["is-done"] : ""}
-                >
-                  <Checkbox
-                    checked={element.isDone}
-                    onChange={funChangeChekbox}
-                    color="primary"
-                  />
-                  <EditableSpan title={element.title} changeSpan={changeSpan} />
-                  <StyledButton variant="contained" onClick={funRemoveTask}>
-                    <DeleteIcon />
-                  </StyledButton>
-                </div>
-              </>
-            );
+          {task.map((element) => {
+            return <TaskItem
+              removetask={props.removetask}
+              changeChekBox={props.changeChekBox}
+              changeTaskTitle={props.changeTaskTitle}
+              id={props.id}
+              element={element}
+              key={element.id}
+            />;
           })}
         </div>
         {/* ---------------- */}
@@ -132,7 +126,7 @@ export function Todolist(props: todolistType) {
       </div>
     </div>
   );
-}
+})
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding:"5px",
@@ -177,4 +171,3 @@ const ActiveButton = styled(Button)(({ theme }) => ({
     backgroundColor: "#FFD700",
   },
 }));
-

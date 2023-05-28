@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { ChangeEvent, KeyboardEvent, memo, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 
@@ -8,7 +8,7 @@ type AddItemFormProps= {
   newAdd: (value: string) => void;
 };
 
-export const AddItemForm = (props: AddItemFormProps) => {
+export const AddItemForm = memo ((props: AddItemFormProps) => {
   //CREATE local use state for input
   let [valueInput, setValueInput] = useState("");
 
@@ -20,6 +20,9 @@ export const AddItemForm = (props: AddItemFormProps) => {
   };
 
   const funKeyHundler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (error !== null){
+      setError(null)
+    }
     setError(null);
     if (event.key === "Enter") {
       NewTaskAdd();
@@ -68,4 +71,4 @@ export const AddItemForm = (props: AddItemFormProps) => {
       {/* add text info error */}
     </div>
   );
-};
+})

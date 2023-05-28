@@ -1,4 +1,4 @@
-import React, { useReducer} from "react";
+import React, { useCallback, useReducer} from "react";
 import "./App.css";
 import { Tasktype, Todolist } from "./todolist/todolist";
 import { v1 } from "uuid";
@@ -32,65 +32,78 @@ export type TaskType = {
   [key: string]: Tasktype[];
 };
 
-function AppWithReduser() {
+function AppWithRedux() {
    const todolists = useSelector<AppRootStateType, TodolistsType[]>((state) => state.todolist);
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
   const dispatch = useDispatch()
 
   // task----------------------------
   //fun remove task
-  function removetask(id: string, idTodo: string) {
-    dispatch(removeTackAC(id, idTodo));
-  }
+  const removetask = useCallback(
+    (id: string, idTodo: string) => {
+      dispatch(removeTackAC(id, idTodo));
+    },
+    [dispatch]
+  );
 
   //add new task
-  const newAddTask = (value: string, id: string) => {
-    dispatch(addTackAC(value, id));
-  };
+  const newAddTask = useCallback(
+    (value: string, id: string) => {
+      dispatch(addTackAC(value, id));
+    },
+    [dispatch]
+  );
 
   //fun change chekbox
-  const changeChekBox = (id: string, valueBoolean: boolean, idTodo: string) => {
-    dispatch(changeTacIsDonekAC(id, valueBoolean, idTodo));
-  };
+  const changeChekBox = useCallback(
+    (id: string, valueBoolean: boolean, idTodo: string) => {
+      dispatch(changeTacIsDonekAC(id, valueBoolean, idTodo));
+    },
+    [dispatch]
+  );
 
   //change task title
-  const changeTaskTitle = (id: string, value: string, idTodo: string) => {
-    dispatch(changeTacTitlekAC(id, value, idTodo));
-  };
+  const changeTaskTitle = useCallback(
+    (id: string, value: string, idTodo: string) => {
+      dispatch(changeTacTitlekAC(id, value, idTodo));
+    },
+    [dispatch]
+  );
   //------------task
 
   //--todolist---------------------
   //delete todolist
-  const deleteTodolist = (idTodo: string) => {
-    dispatch(RemoveTodolistAC(idTodo));
-  };
+  const deleteTodolist = useCallback(
+    (idTodo: string) => {
+      dispatch(RemoveTodolistAC(idTodo));
+    },
+    [dispatch]
+  );
 
   //change task title
-  const changeTodoTitle = (value: string, idTodo: string) => {
-    dispatch(ChangeTodoTitleAC(idTodo, value));
-  };
+  const changeTodoTitle = useCallback(
+    (value: string, idTodo: string) => {
+      dispatch(ChangeTodoTitleAC(idTodo, value));
+    },
+    [dispatch]
+  );
 
   //add new todolist
-  const addTodolist = (title: string) => {
-    dispatch(AddTodoTypeAC(title));
-  };
+  const addTodolist = useCallback(
+    (title: string) => {
+      dispatch(AddTodoTypeAC(title));
+    },
+    [dispatch]
+  );
 
   //return new value in state
-  function changeFilter(value: FitervalueType, id: string) {
-    dispatch(ChangeTodoFilterAC(id, value));
-  }
-  //--todolist---------------------
-
-  const getFilterTodo = (filter: FitervalueType, todo: Tasktype[]) => {
-    switch (filter) {
-      case "active":
-        return todo.filter((el) => el.isDone === true);
-      case "completed":
-        return todo.filter((el) => el.isDone === false);
-      default:
-        return todo;
-    }
-  };
+  const changeFilter = useCallback(
+    (value: FitervalueType, id: string) => {
+      dispatch(ChangeTodoFilterAC(id, value));
+    },
+    [dispatch]
+  );
+  //--todolist---------------------useCallback(
 
   return (
     <div className="App">
@@ -125,7 +138,6 @@ function AppWithReduser() {
         </Grid>
         <Grid container spacing={8}>
           {todolists.map((todo) => {
-            let tastInComponents = getFilterTodo(todo.filter, tasks[todo.id]);
 
             return (
               <Grid item>
@@ -134,7 +146,7 @@ function AppWithReduser() {
                     key={todo.id}
                     id={todo.id}
                     title={todo.title}
-                    task={tastInComponents}
+                    taskTodo={tasks[todo.id]}
                     removetask={removetask}
                     changeFilter={changeFilter}
                     newAddTask={newAddTask}
@@ -154,4 +166,6 @@ function AppWithReduser() {
   );
 }
 
-export default AppWithReduser;
+export default AppWithRedux;
+
+

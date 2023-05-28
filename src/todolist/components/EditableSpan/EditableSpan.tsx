@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -29,7 +29,7 @@ const StyledTextField = styled(TextField)({
   },
 });
 
-export const EditableSpan = (props: EditableSpanType) => {
+export const EditableSpan =memo( (props: EditableSpanType) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(props.title);
 
@@ -64,4 +64,4 @@ export const EditableSpan = (props: EditableSpanType) => {
       {props.title}
     </span>
   );
-};
+})
