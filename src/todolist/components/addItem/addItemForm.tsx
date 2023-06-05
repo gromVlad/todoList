@@ -1,43 +1,15 @@
 import { ChangeEvent, KeyboardEvent, memo, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
+import { useAddItemForm } from "../../../customHook/useaAddItemForm";
 
-
-
-type AddItemFormProps= {
+type AddItemFormProps = {
   newAdd: (value: string) => void;
 };
 
-export const AddItemForm = memo ((props: AddItemFormProps) => {
-  //CREATE local use state for input
-  let [valueInput, setValueInput] = useState("");
-
-  //create error state
-  let [error, setError] = useState<string | null>(null);
-
-  const funAddValueInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueInput(e.currentTarget.value);
-  };
-
-  const funKeyHundler = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (error !== null){
-      setError(null)
-    }
-    setError(null);
-    if (event.key === "Enter") {
-      NewTaskAdd();
-    }
-  };
-
-  //fun add task local if not empty string
-  const NewTaskAdd = () => {
-    if (valueInput.trim() !== "") {
-      props.newAdd(valueInput.trim());
-      setValueInput("");
-    } else {
-      setError("Not correct values");
-    }
-  };
+export const AddItemForm = memo((props: AddItemFormProps) => {
+  const { valueInput, error, funAddValueInput, funKeyHundler, NewTaskAdd } =
+    useAddItemForm(props.newAdd);
 
   return (
     <div>
@@ -48,7 +20,7 @@ export const AddItemForm = memo ((props: AddItemFormProps) => {
         onKeyDown={funKeyHundler}
         error={!!error}
         helperText={error ? "Task title is required" : ""}
-        style={{ margin: "10px",}}
+        style={{ margin: "10px" }}
       />
       {/* disabled if length < = 0 */}
       <Button
@@ -62,7 +34,7 @@ export const AddItemForm = memo ((props: AddItemFormProps) => {
           borderRadius: "10px",
           marginTop: "13px",
           backgroundColor: "rgb(74, 163, 89)",
-          padding:"0px"
+          padding: "0px",
         }}
       >
         +
@@ -71,4 +43,4 @@ export const AddItemForm = memo ((props: AddItemFormProps) => {
       {/* add text info error */}
     </div>
   );
-})
+});

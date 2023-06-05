@@ -1,11 +1,10 @@
-import React, { ChangeEvent, memo, useCallback } from "react";
+import {  memo} from "react";
 import style from "./taskItem.module.css";
-import { styled } from "@mui/material/styles";
-import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
 import { Tasktype } from "../../todolist";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
+import { useStyledTaskItem, useTaskItem } from "../../../customHook/useTaskItem";
 
 type TaskItemType = {
   removetask: (id: string, idtodo: string) => void;
@@ -16,28 +15,13 @@ type TaskItemType = {
 };
 
 export const TaskItem = memo((props: TaskItemType) => {
-  //fun removetask in map
-  const funRemoveTask = () => {
-    props.removetask(props.element.id, props.id);
-  };
+  const { funRemoveTask, funChangeChekbox, changeSpan } = useTaskItem(props.removetask,
+  props.changeChekBox,
+  props.changeTaskTitle,
+  props.id,
+  props.element)
 
-  //fun change checkbox in map
-  const funChangeChekbox = (event: ChangeEvent<HTMLInputElement>) => {
-    props.changeChekBox(
-      props.element.id,
-      event.currentTarget.checked,
-      props.id
-    );
-  };
-
-  //change task Title in map
-  const changeSpan = useCallback(
-    (value: string) => {
-      props.changeTaskTitle(props.element.id, value, props.id);
-    },
-    [props.changeTaskTitle, props.element.id, props.id]
-  );
-
+  const { StyledButton } = useStyledTaskItem()
   return (
     <>
       <div
@@ -58,20 +42,6 @@ export const TaskItem = memo((props: TaskItemType) => {
   );
 })
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  padding: "5px",
-  marginLeft: "7px",
-  backgroundColor: "red",
-  color: "white",
-  borderRadius: "50%",
-  maxWidth: "30px",
-  maxHeight: "30px",
-  minWidth: "30px",
-  minHeight: "30px",
-  transition: "transform 0.3s ease-in-out",
-  "&:hover": {
-    transform: "scale(1.1)",
-  },
-}))
+
 
 
