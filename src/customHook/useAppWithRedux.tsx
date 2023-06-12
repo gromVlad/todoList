@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC } from "../redusers/reduser_tasks";
+import { TaskType, addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
-import { FitervalueType, TaskType, TodolistsType } from "../App";
+import { FitervalueType, TodolistsType } from "../App";
 import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC } from "../redusers/reduser_todolist";
+import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
   const todolists = useSelector<AppRootStateType, TodolistsType[]>(
@@ -31,8 +32,8 @@ export const useAppWithRedux = () => {
 
   //fun change chekbox
   const changeChekBox = useCallback(
-    (id: string, valueBoolean: boolean, idTodo: string) => {
-      dispatch(changeTacIsDonekAC(id, valueBoolean, idTodo));
+    (id: string, status: TaskStatusType, idTodo: string) => {
+      dispatch(changeTacIsDonekAC(id, status, idTodo));
     },
     [dispatch]
   );

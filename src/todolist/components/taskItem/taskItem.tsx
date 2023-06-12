@@ -2,16 +2,16 @@ import {  memo} from "react";
 import style from "./taskItem.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
-import { Tasktype } from "../../todolist";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
 import { useStyledTaskItem, useTaskItem } from "../../../customHook/useTaskItem";
+import { Task, TaskStatusType } from "../../../api/todolistApi";
 
 type TaskItemType = {
   removetask: (id: string, idtodo: string) => void;
-  changeChekBox: (id: string, valueBoolean: boolean, idTodo: string) => void;
+  changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   id: string;
-  element: Tasktype;
+  element: Task
 };
 
 export const TaskItem = memo((props: TaskItemType) => {
@@ -26,10 +26,12 @@ export const TaskItem = memo((props: TaskItemType) => {
     <>
       <div
         key={props.element.id}
-        className={props.element.isDone === true ? style["is-done"] : ""}
+        className={
+          props.element.status === TaskStatusType.Completed ? style["is-done"] : ""
+        }
       >
         <Checkbox
-          checked={props.element.isDone}
+          checked={props.element.status === TaskStatusType.New ? false : true}
           onChange={funChangeChekbox}
           color="primary"
         />

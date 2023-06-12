@@ -1,5 +1,5 @@
 import "./App.css";
-import { Tasktype, Todolist } from "./todolist/todolist";
+import { Todolist } from "./todolist/todolist";
 import { AddItemForm } from "./todolist/components/addItem/addItemForm";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -22,10 +22,6 @@ export type TodolistsType = {
   filter: FitervalueType;
 };
 
-//type tasks
-export type TaskType = {
-  [key: string]: Tasktype[];
-};
 
 function AppWithRedux() {
   const {

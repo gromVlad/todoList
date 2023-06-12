@@ -1,14 +1,14 @@
 import { ChangeEvent, useCallback } from "react";
-import { Tasktype } from "../todolist/todolist";
 import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
+import { Task, TaskStatusType } from "../api/todolistApi";
 
 export const useTaskItem = (
   removetask: (id: string, idtodo: string) => void,
-  changeChekBox: (id: string, valueBoolean: boolean, idTodo: string) => void,
+  changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void,
   changeTaskTitle: (id: string, value: string, idTodo: string) => void,
   id: string,
-  element: Tasktype
+  element: Task
 ) => {
   //fun removetask in map
   const funRemoveTask = () => {
@@ -17,7 +17,13 @@ export const useTaskItem = (
 
   //fun change checkbox in map
   const funChangeChekbox = (event: ChangeEvent<HTMLInputElement>) => {
-    changeChekBox(element.id, event.currentTarget.checked, id);
+    changeChekBox(
+      element.id,
+      event.currentTarget.checked
+        ? TaskStatusType.Completed
+        : TaskStatusType.New,
+      id
+    );
   };
 
   //change task Title in map

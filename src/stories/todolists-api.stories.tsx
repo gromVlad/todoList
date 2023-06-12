@@ -6,6 +6,7 @@ export default {
   title: "API",
 };
 
+//---------TodoList---------
 const settings = {
   withCredentials: true,
   headers: {
@@ -17,14 +18,12 @@ const settings = {
 export const GetTodolists = () => {
   const [state, setState] = useState<any>(null);
   useEffect(() => {
-    axios.get(
-      "https://social-network.samuraijs.com/api/1.1/todo-lists",
-      settings
-    ).then(res => setState(res.data))
-
+    axios
+      .get("https://social-network.samuraijs.com/api/1.1/todo-lists", settings)
+      .then((res) => setState(res.data));
   }, []);
   return <div>{JSON.stringify(state)}</div>;
-};//[]
+}; //[]
 //[{"id":"8f21f4a8-c42c-4b06-884e-61921306a585","title":"hello","addedDate":"2023-06-12T04:29:07.457","order":-3},{"id":"879e76d3-d036-4182-bba7-9913f255e8ad","title":"hello","addedDate":"2023-06-12T04:28:35.897","order":-2},{"id":"28d8267f-d014-44f3-9af5-ba76120fed21","title":"hello","addedDate":"2023-06-12T04:28:12.447","order":-1},{"id":"dd175320-7dc3-441a-bcb7-daabd1b9b2a6","title":"hello","addedDate":"2023-06-12T04:26:16.903","order":0}]
 
 //----------------------------------------
@@ -38,10 +37,10 @@ export const CreateTodolist = () => {
         settings
       )
       .then((res) => setState(res.data));
-  }, []); 
+  }, []);
 
   return <div>{JSON.stringify(state)}</div>;
-};//{"data":{"item":{"id":"28d8267f-d014-44f3-9af5-ba76120fed21","title":"hello","addedDate":"2023-06-12T04:28:12.4451411Z","order":-1}},"messages":[],"fieldsErrors":[],"resultCode":0}
+}; //{"data":{"item":{"id":"28d8267f-d014-44f3-9af5-ba76120fed21","title":"hello","addedDate":"2023-06-12T04:28:12.4451411Z","order":-1}},"messages":[],"fieldsErrors":[],"resultCode":0}
 
 //--------------------------------------------------------
 const todolistId1 = "397da940-9bfa-43f7-8efe-a55d3af228cc";
@@ -58,8 +57,7 @@ export const DeleteTodolist = () => {
   }, []);
 
   return <div>{JSON.stringify(state)}</div>;
-};//{"data":{},"messages":[],"fieldsErrors":[],"resultCode":0}
-
+}; //{"data":{},"messages":[],"fieldsErrors":[],"resultCode":0}
 
 //----------------------------------------------------
 const todolistId2 = "397da940-9bfa-43f7-8efe-a55d3af228cc";
@@ -70,60 +68,245 @@ export const UpdateTodolistTitle = () => {
     axios
       .put(
         `https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId2}`,
-        {title:'new title with id'},
+        { title: "new title with id" },
         settings
       )
       .then((res) => setState(res.data));
   }, []);
 
   return <div>{JSON.stringify(state)}</div>;
-};//{"data":{},"messages":[],"fieldsErrors":[],"resultCode":0}
+}; //{"data":{},"messages":[],"fieldsErrors":[],"resultCode":0}
 //[{"id":"397da940-9bfa-43f7-8efe-a55d3af228cc","title":"new title with id","addedDate":"2023-06-12T04:39:50.23","order":-7}
 
 //-----with api DAL ----//
 
 export const UpdateTodolistTitleDAL = () => {
   const [state, setState] = useState<any>(null);
-  useEffect(() => {
+  const [stateValueId, setstateValueId] = useState<any>(null);
+  const [stateValueText, setstateValueText] = useState<any>(null);
+
+  const updateTodo = () => {
     const todolistId = "d6e91e44-5933-4765-877a-bee86a7a2cc0";
-    todolistAPI.updateTodolist(todolistId, "SOME NEW TITLE").then((res) => {
+    todolistAPI.updateTodolist(stateValueId, stateValueText).then((res) => {
       setState(res.data);
     });
-  }, []);
+  };
 
-  return <div> {JSON.stringify(state)}</div>;
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueId}
+          onChange={(e) => setstateValueId(e.currentTarget.value)}
+          placeholder="id"
+        ></textarea>
+        <textarea
+          value={stateValueText}
+          onChange={(e) => setstateValueText(e.currentTarget.value)}
+          placeholder="text"
+        ></textarea>
+        <button onClick={updateTodo}>UpdateTodolist</button>
+      </div>
+    </div>
+  );
 };
 
 export const GetTodolistsDAL = () => {
   const [state, setState] = useState<any>(null);
-  useEffect(() => {
-    todolistAPI.getTodolists().then((res) => {
-      setState(res.data)})
 
-  }, []);
-  return <div>{JSON.stringify(state)}</div>;
+  const getTodo = () => {
+    todolistAPI.getTodolists().then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <button onClick={getTodo}>GetTodolists</button>
+    </div>
+  );
 };
 
 export const DeleteTodolistDAL = () => {
   const [state, setState] = useState<any>(null);
-  useEffect(() => {
-    const todolistId = "d6e91e44-5933-4765-877a-bee86a7a2cc0";
-    todolistAPI.deleteTodolist(todolistId).then((res) => {
+  const [stateValueId, setstateValueId] = useState<any>(null);
+
+  const deleteTodo = () => {
+    todolistAPI.deleteTodolist(stateValueId).then((res) => {
       setState(res.data);
     });
-  }, []);
+  };
 
-  return <div>{JSON.stringify(state)}</div>;
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueId}
+          onChange={(e) => setstateValueId(e.currentTarget.value)}
+          placeholder="id"
+        ></textarea>
+        <button onClick={deleteTodo}>DeleteTodo</button>
+      </div>
+    </div>
+  );
 };
 
 export const CreateTodolistDAL = () => {
   const [state, setState] = useState<any>(null);
-  useEffect(() => {
-    const titleAdd = 'hello am new title'
-    todolistAPI.createTodolist(titleAdd).then((res) => {
-      setState(res.data); //<--
-    });
-  }, []);
+  const [stateValueText, setstateValueText] = useState<any>(null);
 
-  return <div>{JSON.stringify(state)}</div>;
+  const createTodo = () => {
+    todolistAPI.createTodolist(stateValueText).then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueText}
+          onChange={(e) => setstateValueText(e.currentTarget.value)}
+          placeholder="text"
+        ></textarea>
+        <button onClick={createTodo}>CreateTodolist</button>
+      </div>
+    </div>
+  );
+};
+
+//------------------------task----------------------------
+export const GetTaskDAL = () => {
+  const [state, setState] = useState<any>(null);
+  const [stateValueId, setstateValueId] = useState<any>(null);
+
+  const getTask = () => {
+    todolistAPI.getTask(stateValueId).then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueId}
+          onChange={(e) => setstateValueId(e.currentTarget.value)}
+          placeholder="id"
+        ></textarea>
+        <button onClick={getTask}>GetTask</button>
+      </div>
+    </div>
+  );
+};
+
+export const DeleteTaskDAL = () => {
+  const [state, setState] = useState<any>(null);
+  const [stateValueId, setstateValueId] = useState<any>(null);
+  const [stateValueidTask, setstateValueidTask] = useState<any>(null);
+
+  const deleteTask = () => {
+    todolistAPI.deleteTask(stateValueId, stateValueidTask).then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueId}
+          onChange={(e) => setstateValueId(e.currentTarget.value)}
+          placeholder="id"
+        ></textarea>
+        <textarea
+          value={stateValueidTask}
+          onChange={(e) => setstateValueidTask(e.currentTarget.value)}
+          placeholder="idtask"
+        ></textarea>
+        <button onClick={deleteTask}>DeleteTask</button>
+      </div>
+    </div>
+  );
+};
+
+export const CreateTaskDAL = () => {
+  const [state, setState] = useState<any>(null);
+  const [stateValueId, setstateValueId] = useState<any>(null);
+  const [stateValueText, setstateValueText] = useState<any>(null);
+
+  const createTask = () => {
+    todolistAPI.createTask(stateValueId, stateValueText).then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <div>
+        <textarea
+          value={stateValueId}
+          onChange={(e) => setstateValueId(e.currentTarget.value)}
+          placeholder="id"
+        ></textarea>
+        <textarea
+          value={stateValueText}
+          onChange={(e) => setstateValueText(e.currentTarget.value)}
+          placeholder="text"
+        ></textarea>
+        <button onClick={createTask}>UpdateTodolist</button>
+      </div>
+    </div>
+  );
+};
+
+export const UpdateTaskDAL = () => {
+  const [state, setState] = useState<any>(null);
+  const [stateValueId, setstateValueId] = useState<any>(null);
+  const [stateValueidTask, setstateValueidTask] = useState<any>(null);
+  const [stateValueText, setstateValueText] = useState<any>("");
+
+  const obj = {
+    title: stateValueText,
+    description:"",
+    status: 2,
+    priority: 3,
+    startDate: "",
+    deadline: ""
+  }
+
+  const updateTask = () => {
+    todolistAPI.updateTask(stateValueId, stateValueidTask, obj).then((res) => {
+      setState(res.data);
+    });
+  };
+
+  return (
+    <div>
+      {JSON.stringify(state)}
+      <textarea
+        value={stateValueId}
+        onChange={(e) => setstateValueId(e.currentTarget.value)}
+        placeholder="id"
+      ></textarea>
+      <textarea
+        value={stateValueidTask}
+        onChange={(e) => setstateValueidTask(e.currentTarget.value)}
+        placeholder="idtask"
+      ></textarea>
+      <textarea
+        value={stateValueText}
+        onChange={(e) => setstateValueText(e.currentTarget.value)}
+        placeholder="text"
+      ></textarea>
+      <button onClick={updateTask}>UpdateTask</button>
+    </div>
+  );
 };

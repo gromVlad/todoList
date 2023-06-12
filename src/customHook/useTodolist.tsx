@@ -1,24 +1,24 @@
 import { useCallback } from "react";
 import { FitervalueType } from "../App";
-import { Tasktype } from "../todolist/todolist";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Task, TaskStatusType } from "../api/todolistApi";
 
 export const useTodoList = (
   filter: FitervalueType,
-  taskTodo: Tasktype[],
+  taskTodo: Task[],
   changeFilter: (value: FitervalueType, id: string) => void,
   id: string,
   deleteTodolist: (id: string) => void,
   newAddTask: (value: string, id: string) => void,
   changeTodoTitle: (value: string, idTodo: string) => void
 ) => {
-  const getFilterTodo = (filter: FitervalueType, todo: Tasktype[]) => {
+  const getFilterTodo = (filter: FitervalueType, todo: Task[]) => {
     switch (filter) {
       case "active":
-        return todo.filter((el) => el.isDone === true);
+        return todo.filter((el) => el.status === TaskStatusType.Completed);
       case "completed":
-        return todo.filter((el) => el.isDone === false);
+        return todo.filter((el) => el.status === TaskStatusType.New);
       default:
         return todo;
     }

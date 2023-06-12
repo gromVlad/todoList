@@ -1,5 +1,6 @@
 import { v1 } from "uuid";
 import { FitervalueType, TodolistsType } from "../App";
+import { TodolistType } from "../api/todolistApi";
 
 
 export type RemoveType = {
@@ -34,22 +35,42 @@ type ActionType =
 export let todolistID1 = v1();
 export let todolistID2 = v1();
 
-const initState: TodolistsType[] = [
-  { id: todolistID1, title: "What to learn", filter: "all" },
-  { id: todolistID2, title: "What to buy", filter: "all" },
+type TodolistsTypes = TodolistType & { filter: FitervalueType };
+
+const initState: TodolistsTypes[] = [
+  {
+    id: todolistID1,
+    addedDate: "",
+    title: "What to learn",
+    filter: "all",
+    order: 0,
+  },
+  {
+    id: todolistID2,
+    addedDate: "",
+    title: "What to buy",
+    filter: "all",
+    order: 0,
+  },
 ];
 
 export const userReducerTodolist = (
-  state: TodolistsType[] = initState,
+  state: TodolistsTypes[] = initState,
   action: ActionType
-): TodolistsType[] => {
+): TodolistsTypes[] => {
   switch (action.type) {
     case "REMOVE-TODOLIST":
       return state.filter((el) => el.id !== action.id);
     case "ADD-TODOLIST":
       return [
         ...state,
-        { id: action.idTodo, title: action.title, filter: "all" },
+        {
+          id: action.idTodo,
+          title: action.title,
+          filter: "all",
+          addedDate: "",
+          order: 0,
+        },
       ];
     case "CHANGE-TODOLIST-TITLE":
       return state.map((el) =>
