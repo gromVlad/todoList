@@ -35,7 +35,7 @@ type ActionType =
 export let todolistID1 = v1();
 export let todolistID2 = v1();
 
-type TodolistsTypes = TodolistType & { filter: FitervalueType };
+export type TodolistsTypes = TodolistType & { filter: FitervalueType };
 
 const initState: TodolistsTypes[] = [
   {

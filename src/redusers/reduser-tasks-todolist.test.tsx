@@ -1,11 +1,11 @@
-import { TaskType, TodolistsType } from "../App";
-import { userReducerTask } from "./reduser_tasks";
-import { AddTodoTypeAC, userReducerTodolist } from "./reduser_todolist";
+import { TaskStatusType } from "../api/todolistApi";
+import { TaskType, userReducerTask } from "./reduser_tasks";
+import { AddTodoTypeAC, TodolistsTypes, userReducerTodolist } from "./reduser_todolist";
 
 //проверка на одинаковый idTodo 
 test("ids should be equals", () => {
   const startTasksState: TaskType = {};
-  const startTodolistsState: TodolistsType[] = [];
+  const startTodolistsState: TodolistsTypes[] = [];
 
   const action = AddTodoTypeAC("new todolist");
 

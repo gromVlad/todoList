@@ -1,21 +1,88 @@
 import { TaskType } from "../App";
+import { TaskPriorities } from "../api/todolistApi";
+import { TaskStatusType } from "../api/todolistApi";
 import { addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC, userReducerTask } from "./reduser_tasks";
-import { AddTodoTypeAC, RemoveTodolistAC } from "./reduser_todolist";
-
+import { AddTodoTypeAC, RemoveTodolistAC, todolistID1, todolistID2 } from "./reduser_todolist";
 
 let startState: TaskType;
 
 beforeEach(() => {
   startState = {
-    todolistId1: [
-      { id: "1", title: "CSS", isDone: false },
-      { id: "2", title: "JS", isDone: true },
-      { id: "3", title: "React", isDone: false },
+    [todolistID1]: [
+      {
+        description: "",
+        id: "1",
+        title: "CSS",
+        status: TaskStatusType.New,
+        priority: TaskPriorities.Low,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID1,
+        order: 0,
+        addedDate: "",
+      },
+      {
+        description: "",
+        id: "2",
+        title: "JS",
+        status: TaskStatusType.Completed,
+        priority: TaskPriorities.Urgently,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID1,
+        order: 0,
+        addedDate: "",
+      },
+      {
+        description: "",
+        id: "3",
+        title: "React",
+        status: TaskStatusType.New,
+        priority: TaskPriorities.Middle,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID1,
+        order: 0,
+        addedDate: "",
+      },
     ],
-    todolistId2: [
-      { id: "1", title: "bread", isDone: false },
-      { id: "2", title: "milk", isDone: true },
-      { id: "3", title: "tea", isDone: false },
+    [todolistID2]: [
+      {
+        description: "",
+        id: "1",
+        title: "bread",
+        status: TaskStatusType.New,
+        priority: TaskPriorities.Low,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID2,
+        order: 0,
+        addedDate: "",
+      },
+      {
+        description: "",
+        id: "2",
+        title: "milk",
+        status: TaskStatusType.Completed,
+        priority: TaskPriorities.Urgently,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID2,
+        order: 0,
+        addedDate: "",
+      },
+      {
+        description: "",
+        id: "3",
+        title: "tea",
+        status: TaskStatusType.New,
+        priority: TaskPriorities.Middle,
+        startDate: "",
+        deadline: "",
+        todoListId: todolistID2,
+        order: 0,
+        addedDate: "",
+      },
     ],
   };
 })
@@ -49,17 +116,17 @@ test("correct task should be added to correct array", () => {
   expect(endState["todolistId2"].length).toBe(4);
   expect(endState["todolistId2"][0].id).toBeDefined();
   expect(endState["todolistId2"][0].title).toBe("juce");
-  expect(endState["todolistId2"][0].isDone).toBe(false);
+  expect(endState["todolistId2"][0].status).toBe(TaskStatusType.New);
 });
 
 //change task isDone
 test("status of specified task should be changed", () => {
   
-  const action = changeTacIsDonekAC("2", false, "todolistId2");
+  const action = changeTacIsDonekAC("2", TaskStatusType.New, "todolistId2");
 
   const endState = userReducerTask(startState, action);
 
-  expect(endState["todolistId2"][1].isDone).toBe(false);
+  expect(endState["todolistId2"][1].status).toBe(TaskStatusType.New);
   expect(endState["todolistId2"].length).toBe(3);
 });
 
