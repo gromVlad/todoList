@@ -57,6 +57,12 @@
       }
     ]
   },
+   "jest": {
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs",
+      "transformIgnorePatterns": ["node_modules\/(?!axios)"]
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -70,7 +76,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
     "@storybook/addon-essentials": "^7.0.18",
     "@storybook/addon-interactions": "^7.0.18",
     "@storybook/addon-links": "^7.0.18",
@@ -92,4 +102,5 @@
     "storybook": "^7.0.18",
     "webpack": "^5.85.0"
   }
+  
 }
