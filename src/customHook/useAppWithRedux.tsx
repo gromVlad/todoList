@@ -1,9 +1,9 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { TaskType, addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC } from "../redusers/reduser_tasks";
+import { TaskType, addNewTasksThunk, addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC, removeTasksThunk, updateTaskStatusTC } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
 import { FitervalueType, TodolistsType } from "../App";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC } from "../redusers/reduser_todolist";
+import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
@@ -13,11 +13,15 @@ export const useAppWithRedux = () => {
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchTodolistAddThunk)
+  },[])
+
   // task----------------------------
   //fun remove task
   const removetask = useCallback(
     (id: string, idTodo: string) => {
-      dispatch(removeTackAC(id, idTodo));
+      dispatch(removeTasksThunk(id, idTodo));
     },
     [dispatch]
   );
@@ -25,7 +29,7 @@ export const useAppWithRedux = () => {
   //add new task
   const newAddTask = useCallback(
     (value: string, id: string) => {
-      dispatch(addTackAC(value, id));
+      dispatch(addNewTasksThunk(value, id));
     },
     [dispatch]
   );
@@ -33,7 +37,7 @@ export const useAppWithRedux = () => {
   //fun change chekbox
   const changeChekBox = useCallback(
     (id: string, status: TaskStatusType, idTodo: string) => {
-      dispatch(changeTacIsDonekAC(id, status, idTodo));
+      dispatch(updateTaskStatusTC(id, idTodo, status));
     },
     [dispatch]
   );

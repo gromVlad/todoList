@@ -1,8 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FitervalueType } from "../App";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Task, TaskStatusType } from "../api/todolistApi";
+import { useDispatch } from "react-redux";
+import { fetchTasksThunk } from "../redusers/reduser_tasks";
 
 export const useTodoList = (
   filter: FitervalueType,
@@ -13,6 +15,12 @@ export const useTodoList = (
   newAddTask: (value: string, id: string) => void,
   changeTodoTitle: (value: string, idTodo: string) => void
 ) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchTasksThunk(id));
+  }, []);
+
   const getFilterTodo = (filter: FitervalueType, todo: Task[]) => {
     switch (filter) {
       case "active":
