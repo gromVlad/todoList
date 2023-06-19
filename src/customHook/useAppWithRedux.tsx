@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { TaskType, addNewTasksThunk, addTackAC, changeTacIsDonekAC, changeTacTitlekAC, removeTackAC, removeTasksThunk, updateTaskStatusTC } from "../redusers/reduser_tasks";
+import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
 import { FitervalueType, TodolistsType } from "../App";
 import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
@@ -37,15 +37,15 @@ export const useAppWithRedux = () => {
   //fun change chekbox
   const changeChekBox = useCallback(
     (id: string, status: TaskStatusType, idTodo: string) => {
-      dispatch(updateTaskStatusTC(id, idTodo, status));
+      dispatch(updateTask(id, idTodo, {status}));
     },
     [dispatch]
   );
 
   //change task title
   const changeTaskTitle = useCallback(
-    (id: string, value: string, idTodo: string) => {
-      dispatch(changeTacTitlekAC(id, value, idTodo));
+    (id: string, title: string, idTodo: string) => {
+      dispatch(updateTask(id, idTodo, {title}));
     },
     [dispatch]
   );

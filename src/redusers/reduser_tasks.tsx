@@ -10,8 +10,7 @@ import { AppRootStateType } from "./state";
 
 const REMOVE_TASK = "REMOVE_TASK";
 const ADD_TASK = "ADD_TASK";
-const CHANGE_TASK_ISDONE = "CHANGE_TASK_ISDONE";
-const CHANGE_TASK_TITLE = "CHANGE_TASK_TITLE";
+const CHANGE_TASK = "CHANGE_TASK_ISDONE";
 
 export type TaskType = {
   [key: string]: Task[];
@@ -33,24 +32,12 @@ export const userReducerTask = (
         ),
       };
     case ADD_TASK:
-      // const stateCopy1 = { ...state };
-      // const tasks = stateCopy1[action.box.task.todoListId];
-      // const newTasks = [action.box.task, ...tasks];
-      // stateCopy1[action.box.task.todoListId] = newTasks;
-      // return stateCopy1;
       return { ...state, [action.box.task.todoListId]: [action.box.task, ...state[action.box.task.todoListId]] }
-    case CHANGE_TASK_ISDONE:
+    case CHANGE_TASK:
       return {
         ...state,
         [action.box.idTodo]: state[action.box.idTodo].map((el) =>
-          el.id === action.box.id ? { ...el, status: action.box.status } : el
-        ),
-      };
-    case CHANGE_TASK_TITLE:
-      return {
-        ...state,
-        [action.box.idTodo]: state[action.box.idTodo].map((el) =>
-          el.id === action.box.id ? { ...el, title: action.box.value } : el
+          el.id === action.box.id ? { ...el, ...action.box.mod } : el
         ),
       };
     case "ADD-TODOLIST":
@@ -97,36 +84,16 @@ export const addTackAC = (task: Task) => {
   } as const;
 };
 
-export const changeTacIsDonekAC = (
-  id: string,
-  status: TaskStatusType,
-  idTodo: string
-) => {
+export const changeTackAC = (id: string, mod: PutTypeTask, idTodo: string) => {
   return {
-    type: CHANGE_TASK_ISDONE,
+    type: CHANGE_TASK,
     box: {
       id,
-      status,
+      mod,
       idTodo,
     },
   } as const;
 };
-
-export const changeTacTitlekAC = (
-  id: string,
-  value: string,
-  idTodo: string
-) => {
-  return {
-    type: CHANGE_TASK_TITLE,
-    box: {
-      id,
-      value,
-      idTodo,
-    },
-  } as const;
-};
-
 
 export const setTackAC = (tasks: Task[], todolistId: string) => {
   return {
@@ -141,15 +108,13 @@ export const setTackAC = (tasks: Task[], todolistId: string) => {
 
 type RemovetaskType = ReturnType<typeof removeTackAC>;
 type AddtaskType = ReturnType<typeof addTackAC>;
-type ChangetaskType = ReturnType<typeof changeTacIsDonekAC>;
-type ChangetaskTitleType = ReturnType<typeof changeTacTitlekAC>;
+type ChangetaskType = ReturnType<typeof changeTackAC>;
 type SetTasksActionType = ReturnType<typeof setTackAC>;
 
 type ActionTypeTasK =
   | RemovetaskType
   | AddtaskType
   | ChangetaskType
-  | ChangetaskTitleType
   | AddTodoType
   | RemoveType
   | SetTodolistsActionType
@@ -176,14 +141,22 @@ export const addNewTasksThunk: any =
     });
   };
 
-export const updateTaskStatusTC = (
+
+type PutTypeTask = {
+  title?: string;
+  description?: string;
+  status?: TaskStatusType;
+  priority?: number;
+  startDate?: string;
+  deadline?: string;
+};
+
+export const updateTask = (
   taskId: string,
   todolistId: string,
-  status: TaskStatusType
-):any => {
+  mod: PutTypeTask
+): any => {
   return (dispatch: Dispatch, getState: () => AppRootStateType) => {
-    // так как мы обязаны на сервер отправить все св-ва, которые сервер ожидает, а не только
-    // те, которые мы хотим обновить, соответственно нам нужно в этом месте взять таску целиком  // чтобы у неё отобрать остальные св-ва
 
     const allTasksFromState = getState().tasks;
     const tasksForCurrentTodolist = allTasksFromState[todolistId];
@@ -196,13 +169,14 @@ export const updateTaskStatusTC = (
         .updateTask(todolistId, taskId, {
           title: task.title,
           description: task.description,
-          status: status,
+          status: task.status,
           priority: task.priority,
           startDate: task.startDate,
           deadline: task.deadline,
+          ...mod
         })
         .then(() => {
-          const action = changeTacIsDonekAC(taskId, status, todolistId);
+          const action = changeTackAC(taskId, mod, todolistId);
           dispatch(action);
         });
     }
