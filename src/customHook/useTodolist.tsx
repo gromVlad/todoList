@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { FitervalueType } from "../App";
+import { FitervalueType } from "../old/App";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Task, TaskStatusType } from "../api/todolistApi";

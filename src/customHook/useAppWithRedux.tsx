@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
-import { FitervalueType, TodolistsType } from "../App";
+import { FitervalueType, TodolistsType } from "../old/App";
 import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 

@@ -1,44 +1,13 @@
-import { v1 } from "uuid";
-import { FitervalueType, TodolistsType } from "../App";
 import { TodolistType, todolistAPI } from "../api/todolistApi";
 import { Dispatch } from "redux";
 
-export type RemoveType = {
-  type: "REMOVE-TODOLIST";
-  id: string;
-};
-
-export type AddTodoType = {
-  type: "ADD-TODOLIST";
-  todoNew: TodolistType;
-};
-
-type ChangeTodoTitleType = {
-  type: "CHANGE-TODOLIST-TITLE";
-  id: string;
-  title: string;
-};
-
-type ChangeTodoFilterType = {
-  type: "CHANGE-TODOLIST-FILTER";
-  id: string;
-  filter: FitervalueType;
-};
-
-type ActionType =
-  | RemoveType
-  | AddTodoType
-  | ChangeTodoTitleType
-  | ChangeTodoFilterType
-  | SetTodolistsActionType;
-
-export let todolistID1 = v1();
-export let todolistID2 = v1();
+export type FitervalueType = "all" | "completed" | "active";
 
 export type TodolistsTypes = TodolistType & { filter: FitervalueType };
 
 const initState: TodolistsTypes[] = [];
 
+//____redusersTodoList________//
 export const userReducerTodolist = (
   state: TodolistsTypes[] = initState,
   action: ActionType
@@ -67,6 +36,7 @@ export const userReducerTodolist = (
   }
 };
 
+//__________action______________//
 export const RemoveTodolistAC = (todolistId: string): RemoveType => {
   return { type: "REMOVE-TODOLIST", id: todolistId };
 };
@@ -108,6 +78,36 @@ export const setTodolistsAC = (
   return { type: "SET-TODOLISTS", todolists };
 };
 
+export type RemoveType = {
+  type: "REMOVE-TODOLIST";
+  id: string;
+};
+
+export type AddTodoType = {
+  type: "ADD-TODOLIST";
+  todoNew: TodolistType;
+};
+
+type ChangeTodoTitleType = {
+  type: "CHANGE-TODOLIST-TITLE";
+  id: string;
+  title: string;
+};
+
+type ChangeTodoFilterType = {
+  type: "CHANGE-TODOLIST-FILTER";
+  id: string;
+  filter: FitervalueType;
+};
+
+type ActionType =
+  | RemoveType
+  | AddTodoType
+  | ChangeTodoTitleType
+  | ChangeTodoFilterType
+  | SetTodolistsActionType;
+
+//__________thunk____________//
 export const fetchTodolistAddThunk: any=  (dispatch: Dispatch) => {
     todolistAPI
       .getTodolists()

@@ -1,5 +1,4 @@
 import  {  memo } from "react";
-import { FitervalueType } from "../App";
 import style from './todolist.module.css'
 import { AddItemForm } from "./components/addItem/addItemForm";
 import { EditableSpan } from "./components/EditableSpan/EditableSpan";
@@ -7,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TaskItem } from "./components/taskItem/taskItem";
 import { useStyledComponentTodolist, useTodoList } from "../customHook/useTodolist";
 import { Task, TaskStatusType } from "../api/todolistApi";
+import { FitervalueType } from "../redusers/reduser_todolist";
 
 
 type todolistType = {
