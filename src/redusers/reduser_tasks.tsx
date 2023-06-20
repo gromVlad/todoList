@@ -43,7 +43,7 @@ export const userReducerTask = (
     case "ADD-TODOLIST":
       return {
         ...state,
-        [action.idTodo]: [],
+        [action.todoNew.id]: [],
       };
     case "REMOVE-TODOLIST":
       const copyState = { ...state };

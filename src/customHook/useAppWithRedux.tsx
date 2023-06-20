@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
 import { FitervalueType, TodolistsType } from "../App";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
+import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
@@ -55,7 +55,7 @@ export const useAppWithRedux = () => {
   //delete todolist
   const deleteTodolist = useCallback(
     (idTodo: string) => {
-      dispatch(RemoveTodolistAC(idTodo));
+      dispatch(deleteTodolistThunk(idTodo));
     },
     [dispatch]
   );
@@ -63,7 +63,7 @@ export const useAppWithRedux = () => {
   //change task title
   const changeTodoTitle = useCallback(
     (value: string, idTodo: string) => {
-      dispatch(ChangeTodoTitleAC(idTodo, value));
+      dispatch(changeTitleTodolistThunk(idTodo, value));
     },
     [dispatch]
   );
@@ -71,7 +71,7 @@ export const useAppWithRedux = () => {
   //add new todolist
   const addTodolist = useCallback(
     (title: string) => {
-      dispatch(AddTodoTypeAC(title));
+      dispatch(addNewTodolistThunk(title));
     },
     [dispatch]
   );
