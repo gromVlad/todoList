@@ -131,7 +131,7 @@ type ActionTypeTasK =
   | SetTasksActionType;
 
 ///________Thunk__________///
-export const fetchTasksThunk: any =
+export const fetchTasksThunk=
   (todolistId: string) => (dispatch: Dispatch) => {
     todolistAPI.getTask(todolistId).then((res) => {
       const tasks = res.data.items;
@@ -139,14 +139,14 @@ export const fetchTasksThunk: any =
     });
   };
 
-export const removeTasksThunk: any =
+export const removeTasksThunk =
   (id: string, idTodo: string) => (dispatch: Dispatch) => {
     todolistAPI.deleteTask(idTodo, id).then((res) => {
       dispatch(removeTackAC(id, idTodo));
     });
   };
 
-export const addNewTasksThunk: any =
+export const addNewTasksThunk =
   (title: string, todolistId: string) => (dispatch: Dispatch) => {
     todolistAPI.createTask(todolistId, title).then((res) => {
       dispatch(addTackAC(res.data.data.item));
@@ -166,7 +166,7 @@ export const updateTask = (
   taskId: string,
   todolistId: string,
   mod: PutTypeTask
-): any => {
+) => {
   return (dispatch: Dispatch, getState: () => AppRootStateType) => {
     const allTasksFromState = getState().tasks;
     const tasksForCurrentTodolist = allTasksFromState[todolistId];

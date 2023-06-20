@@ -1,10 +1,11 @@
 import { useCallback, useEffect } from "react";
-import { FitervalueType } from "../old/App";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Task, TaskStatusType } from "../api/todolistApi";
 import { useDispatch } from "react-redux";
 import { fetchTasksThunk } from "../redusers/reduser_tasks";
+import { useDispatchWithType } from "../redusers/state";
+import { FitervalueType } from "../redusers/reduser_todolist";
 
 export const useTodoList = (
   filter: FitervalueType,
@@ -15,7 +16,7 @@ export const useTodoList = (
   newAddTask: (value: string, id: string) => void,
   changeTodoTitle: (value: string, idTodo: string) => void
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatchWithType();
 
   useEffect(() => {
     dispatch(fetchTasksThunk(id));

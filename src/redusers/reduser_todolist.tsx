@@ -108,25 +108,25 @@ type ActionType =
   | SetTodolistsActionType;
 
 //__________thunk____________//
-export const fetchTodolistAddThunk: any=  (dispatch: Dispatch) => {
+export const fetchTodolistAddThunk =  (dispatch: Dispatch) => {
     todolistAPI
       .getTodolists()
       .then((res) => dispatch(setTodolistsAC(res.data)));
 }; 
 
-export const addNewTodolistThunk: any = (title:string) =>  (dispatch: Dispatch) => {
+export const addNewTodolistThunk  = (title:string) =>  (dispatch: Dispatch) => {
     todolistAPI
       .createTodolist(title)
       .then((res) => dispatch(AddTodoTypeAC(res.data.data.item)));
 }; 
 
-export const deleteTodolistThunk: any = (todolistId: string) =>  (dispatch: Dispatch) => {
+export const deleteTodolistThunk  = (todolistId: string) =>  (dispatch: Dispatch) => {
     todolistAPI
       .deleteTodolist(todolistId)
       .then((res) => dispatch(RemoveTodolistAC(todolistId)));
 }; 
 
-export const changeTitleTodolistThunk: any =
+export const changeTitleTodolistThunk  =
   (todolistId:string,title: string) => (dispatch: Dispatch) => {
     todolistAPI
       .updateTodolist(todolistId,title)

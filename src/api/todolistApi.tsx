@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 //----------todolist----------
 export type TodolistType = {
@@ -86,7 +86,7 @@ const instance = axios.create({
 
 export const todolistAPI = {
   updateTodolist(todolistId: string, title: string) {
-    const promise = instance.put<ResponseTypeApI>(`todo-lists/${todolistId}`, {
+    const promise = instance.put<ResponseTypeApI, AxiosResponse<ResponseTypeApI>,{title:string}>(`todo-lists/${todolistId}`, {
       title: title,
     });
     return promise;

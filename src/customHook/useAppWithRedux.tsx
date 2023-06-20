@@ -1,17 +1,16 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
-import { AppRootStateType } from "../redusers/state";
-import { FitervalueType, TodolistsType } from "../old/App";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
+import { AppRootStateType, useDispatchWithType } from "../redusers/state";
+import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, FitervalueType, RemoveTodolistAC, TodolistsTypes, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
-  const todolists = useSelector<AppRootStateType, TodolistsType[]>(
+  const todolists = useSelector<AppRootStateType, TodolistsTypes[]>(
     (state) => state.todolist
   );
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
-  const dispatch = useDispatch();
+  const dispatch = useDispatchWithType();
 
   useEffect(() => {
     dispatch(fetchTodolistAddThunk)
