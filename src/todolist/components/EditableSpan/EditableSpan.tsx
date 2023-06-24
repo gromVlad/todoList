@@ -28,7 +28,16 @@ export const EditableSpan = memo( (props: EditableSpanType) => {
       onKeyDown={handleKeyDown}
     />
   ) : (
-    <span onDoubleClick={handleDoubleClick} style={{ fontSize: "21px" ,marginLeft:"5px"}}>
+    <span
+      onDoubleClick={handleDoubleClick}
+      style={{
+        fontSize: "21px",
+        marginLeft: "5px",
+        wordWrap: "break-word",
+        maxWidth: "200px",
+        display: "inline-block",
+      }}
+    >
       {props.title}
     </span>
   );

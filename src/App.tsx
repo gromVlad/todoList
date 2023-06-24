@@ -72,7 +72,7 @@ function App() {
           {todolists.map((todo) => {
             return (
               <Grid item key={todo.id}>
-                <Paper>
+                <Paper >
                   <Todolist
                     todo={todo}
                     taskTodo={tasks[todo.id]}

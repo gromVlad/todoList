@@ -28,16 +28,24 @@ export const TaskItem = memo((props: TaskItemType) => {
       <div
         key={props.element.id}
         className={
-          props.element.status === TaskStatusType.Completed ? style["is-done"] : ""
+          props.element.status === TaskStatusType.Completed
+            ? style["is-done"]
+            : ""
         }
       >
         <Checkbox
           checked={props.element.status === TaskStatusType.New ? false : true}
           onChange={funChangeChekbox}
           color="primary"
+          style={{ verticalAlign: "top" }}
         />
         <EditableSpan title={props.element.title} changeSpan={changeSpan} />
-        <StyledButton variant="contained" onClick={funRemoveTask} disabled={props.dis}>
+        <StyledButton
+          variant="contained"
+          onClick={funRemoveTask}
+          disabled={props.dis}
+          style={{ verticalAlign: "top" }}
+        >
           <DeleteIcon />
         </StyledButton>
       </div>
