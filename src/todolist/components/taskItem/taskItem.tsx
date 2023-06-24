@@ -11,7 +11,8 @@ type TaskItemType = {
   changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   id: string;
-  element: Task
+  element: Task;
+  dis:boolean
 };
 
 export const TaskItem = memo((props: TaskItemType) => {
@@ -36,7 +37,7 @@ export const TaskItem = memo((props: TaskItemType) => {
           color="primary"
         />
         <EditableSpan title={props.element.title} changeSpan={changeSpan} />
-        <StyledButton variant="contained" onClick={funRemoveTask}>
+        <StyledButton variant="contained" onClick={funRemoveTask} disabled={props.dis}>
           <DeleteIcon />
         </StyledButton>
       </div>

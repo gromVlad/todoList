@@ -137,7 +137,6 @@ export const todolistAPI = {
   },
 
   updateTask(todolistId: string, taskId: string, objects: PutTypeTask) {
-    debugger
     const promise = instance.put<ResponseTypeApI<{ item: PutTypeTask }>>(
       `todo-lists/${todolistId}/tasks/${taskId}`,
       objects

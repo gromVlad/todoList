@@ -6,18 +6,19 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TaskItem } from "./components/taskItem/taskItem";
 import { useStyledComponentTodolist, useTodoList } from "../customHook/useTodolist";
 import { Task, TaskStatusType } from "../api/todolistApi";
-import { FitervalueType } from "../redusers/reduser_todolist";
+import { FitervalueType, TodolistsTypes } from "../redusers/reduser_todolist";
+import { RequestStatusType } from "../redusers/app-reducer";
+import { AppRootStateType } from "../redusers/state";
+import { useSelector } from "react-redux";
 
 
 type todolistType = {
-  title: string;
+  todo: TodolistsTypes;
   taskTodo: Task[];
-  id: string;
   removetask: (id: string, idtodo: string) => void;
   changeFilter: (value: FitervalueType, id: string) => void;
   newAddTask: (value: string, id: string) => void;
   changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void;
-  filter: FitervalueType;
   deleteTodolist: (id: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   changeTodoTitle: (value: string, idTodo: string) => void;
@@ -27,6 +28,10 @@ type todolistType = {
 
 export const Todolist = memo((props: todolistType) => {
 
+   const entityStatus = useSelector<AppRootStateType, RequestStatusType>(
+     (state) => state.appStatus.status
+   );
+
   const {
     task,
     changeValueButton,
@@ -34,10 +39,10 @@ export const Todolist = memo((props: todolistType) => {
     newAddtaskOnValue,
     changeTodoTitleRet,
   } = useTodoList(
-  props.filter,
+  props.todo.filter,
   props.taskTodo,
   props.changeFilter,
-  props.id,
+  props.todo.id,
   props.deleteTodolist,
   props.newAddTask,
   props.changeTodoTitle,
@@ -47,25 +52,38 @@ export const Todolist = memo((props: todolistType) => {
   useStyledComponentTodolist();
 
   return (
-    <div style={{borderBottom: "2px solid black", margin:'10px'}}>
+    <div style={{ borderBottom: "2px solid black", margin: "10px" }}>
       <div>
-        <EditableSpan title={props.title} changeSpan={changeTodoTitleRet} />
-        <StyledButton variant="contained" onClick={funRemoveTodolist}>
+        <EditableSpan
+          title={props.todo.title}
+          changeSpan={changeTodoTitleRet}
+        />
+        <StyledButton
+          variant="contained"
+          onClick={funRemoveTodolist}
+          disabled={props.todo.entityStatus}
+        >
           <DeleteIcon />
         </StyledButton>
-        <AddItemForm newAdd={newAddtaskOnValue} />
+        <AddItemForm
+          newAdd={newAddtaskOnValue}
+          dis={entityStatus === "loading"}
+        />
 
         {/* ------map-------*/}
         <div>
           {task.map((element) => {
-            return <TaskItem
-              removetask={props.removetask}
-              changeChekBox={props.changeChekBox}
-              changeTaskTitle={props.changeTaskTitle}
-              id={props.id}
-              element={element}
-              key={element.id}
-            />;
+            return (
+              <TaskItem
+                removetask={props.removetask}
+                changeChekBox={props.changeChekBox}
+                changeTaskTitle={props.changeTaskTitle}
+                id={props.todo.id}
+                element={element}
+                key={element.id}
+                dis={entityStatus === "loading"}
+              />
+            );
           })}
         </div>
         {/* ---------------- */}
@@ -73,24 +91,28 @@ export const Todolist = memo((props: todolistType) => {
         <div>
           <AllButton
             variant="contained"
-            className={props.filter === "all" ? style["active-filter"] : ""}
-            onClick={() => changeValueButton("all", props.id)}
+            className={
+              props.todo.filter === "all" ? style["active-filter"] : ""
+            }
+            onClick={() => changeValueButton("all", props.todo.id)}
           >
             All
           </AllButton>
           <CompletedButton
             variant="contained"
             className={
-              props.filter === "completed" ? style["active-filter"] : ""
+              props.todo.filter === "completed" ? style["active-filter"] : ""
             }
-            onClick={() => changeValueButton("completed", props.id)}
+            onClick={() => changeValueButton("completed", props.todo.id)}
           >
             Active
           </CompletedButton>
           <ActiveButton
             variant="contained"
-            className={props.filter === "active" ? style["active-filter"] : ""}
-            onClick={() => changeValueButton("active", props.id)}
+            className={
+              props.todo.filter === "active" ? style["active-filter"] : ""
+            }
+            onClick={() => changeValueButton("active", props.todo.id)}
           >
             Completed
           </ActiveButton>

@@ -5,6 +5,7 @@ import { useAddItemForm } from "../../../customHook/useaAddItemForm";
 
 type AddItemFormProps = {
   newAdd: (value: string) => void;
+  dis?:boolean
 };
 
 export const AddItemForm = memo((props: AddItemFormProps) => {
@@ -22,8 +23,8 @@ export const AddItemForm = memo((props: AddItemFormProps) => {
         helperText={error ? "Task title is required" : ""}
         style={{ margin: "10px" }}
       />
-      {/* disabled if length < = 0 */}
       <Button
+        disabled = {props.dis}
         variant="contained"
         color="primary"
         size="small"
