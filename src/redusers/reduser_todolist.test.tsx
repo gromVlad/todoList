@@ -1,4 +1,4 @@
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, TodolistsTypes, setTodolistsAC, userReducerTodolist } from "./reduser_todolist";
+import { AddTodoTypeAC, ChangeEntityStatusTodoTitleAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, TodolistsTypes, setTodolistsAC, userReducerTodolist } from "./reduser_todolist";
 
 describe("userReducerTodolist reducer", () => {
   let state: TodolistsTypes[] = [];
@@ -11,6 +11,7 @@ describe("userReducerTodolist reducer", () => {
         order: 0,
         title: "Todo 1",
         filter: "all",
+        entityStatus: false,
       },
       {
         id: "2",
@@ -18,6 +19,7 @@ describe("userReducerTodolist reducer", () => {
         order: 1,
         title: "Todo 2",
         filter: "all",
+        entityStatus: false,
       },
     ];
   });
@@ -68,4 +70,23 @@ describe("userReducerTodolist reducer", () => {
     expect(newState[1].id).toBe("4");
     expect(newState[1].title).toBe("Todo 4");
   });
+
+  test("should change entityStatus of a todolist", () => {
+    const action = ChangeEntityStatusTodoTitleAC("2", true);
+
+    const newState = userReducerTodolist(state, action);
+
+    expect(newState[1].entityStatus).toBeTruthy();
+  });
+
+  test("should not change entityStatus of other todolists", () => {
+    const action = ChangeEntityStatusTodoTitleAC("2", true);
+
+    const newState = userReducerTodolist(state, action);
+
+    expect(newState[0].entityStatus).toBeFalsy();
+  });
+
+
 });
+

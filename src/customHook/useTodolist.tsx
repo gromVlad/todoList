@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { Task, TaskStatusType } from "../api/todolistApi";
 import { useDispatch } from "react-redux";
 import { fetchTasksThunk } from "../redusers/reduser_tasks";
-import { useDispatchWithType } from "../redusers/state";
+import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
 import { FitervalueType } from "../redusers/reduser_todolist";
 
 export const useTodoList = (

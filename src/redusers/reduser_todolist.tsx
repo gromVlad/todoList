@@ -140,6 +140,12 @@ export type ActionType =
   | ChangeEntityType
 
 //__________thunk____________//
+export enum ResultCode {
+  OK = 0,
+  ERROr = 1,
+  ERROR_CAPTCHA = 10
+}
+
 export const fetchTodolistAddThunk =  (dispatch: Dispatch) => {
     dispatch(changeTackAppStatusAC("loading"));
     todolistAPI
@@ -158,11 +164,11 @@ export const addNewTodolistThunk  = (title:string) =>  (dispatch: Dispatch) => {
     todolistAPI
       .createTodolist(title)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.OK) {
           dispatch(AddTodoTypeAC(res.data.data.item));
           dispatch(changeTackAppStatusAC("succeeded"));
         } else {
-           handleServerAppError(res.data, dispatch);
+          handleServerAppError(res.data, dispatch);
         }
       })
       .catch(error => {
@@ -176,7 +182,7 @@ export const deleteTodolistThunk  = (todolistId: string) =>  (dispatch: Dispatch
     todolistAPI
       .deleteTodolist(todolistId)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.OK) {
           dispatch(RemoveTodolistAC(todolistId));
           dispatch(ChangeEntityStatusTodoTitleAC(todolistId, false));
           dispatch(changeTackAppStatusAC("succeeded"));
@@ -184,6 +190,7 @@ export const deleteTodolistThunk  = (todolistId: string) =>  (dispatch: Dispatch
           handleServerAppError(res.data, dispatch);
         }
       })
+      //получть сообщение об ошибке сгенерированно сервером 
       .catch((error) => {
         handleServerNetworkError(error, dispatch);
       });
@@ -197,7 +204,7 @@ export const changeTitleTodolistThunk =
     todolistAPI
       .updateTodolist(todolistId, title)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.OK) {
           dispatch(ChangeTodoTitleAC(todolistId, title));
           dispatch(changeTackAppStatusAC("succeeded"));
         } else {
@@ -219,3 +226,8 @@ export const changeTitleTodolistThunk =
 //       throw new Error('error');
 //     }
 //   };
+
+//например первая <T>  то что закидывем сразу типизируеться, далее дакже это указываем в сомо аргументе и последнее та типизация что мы принимаем то и вернем по факту
+function res <T>(arg:T):T  {
+  return arg
+}

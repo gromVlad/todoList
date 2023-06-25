@@ -1,6 +1,7 @@
 import {
   AddTodoType,
   RemoveType,
+  ResultCode,
   SetTodolistsActionType,
 } from "./reduser_todolist";
 import {
@@ -10,7 +11,7 @@ import {
 } from "../api/todolistApi";
 import { Dispatch } from "redux";
 import { AppRootStateType } from "./state";
-import { changeTackAppErrorAC, changeTackAppStatusAC } from "./app-reducer";
+import { changeTackAppStatusAC } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
 
 
@@ -154,7 +155,7 @@ export const removeTasksThunk =
     todolistAPI
       .deleteTask(idTodo, id)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.OK) {
           dispatch(removeTackAC(id, idTodo));
           dispatch(changeTackAppStatusAC("succeeded"));
         } else {
@@ -172,7 +173,7 @@ export const addNewTasksThunk =
     todolistAPI
       .createTask(todolistId, title)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.OK) {
           dispatch(addTackAC(res.data.data.item));
           dispatch(changeTackAppStatusAC("succeeded"));
         } else {
