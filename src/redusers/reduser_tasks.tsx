@@ -78,7 +78,6 @@ export const userReducerTask = (
   }
 };
 
-//_____Actions________//
 export const removeTackAC = (id: string, idTodo: string) => {
   return {
     type: REMOVE_TASK,
@@ -131,9 +130,8 @@ export type ActionTypeTasK =
   | AddTodoType
   | RemoveType
   | SetTodolistsActionType
-  | SetTasksActionType;
+  | SetTasksActionType
 
-///________Thunk__________///
 export const fetchTasksThunk=
   (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(changeTackAppStatusAC("loading"));

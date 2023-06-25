@@ -110,6 +110,13 @@ export const todolistAPI = {
     );
     return promise;
   },
+  
+  reorder(todolistId: string, putAfterItemId: string | null) {
+    return instance.put<ResponseTypeApI>(`/todo-lists/${todolistId}/reorder`, {
+      putAfterItemId,
+    });
+  },
+
 
   //---task
   getTask(todolistId: string) {

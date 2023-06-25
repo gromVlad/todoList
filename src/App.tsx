@@ -14,6 +14,8 @@ import { AppRootStateType} from "./redusers/state";
 import { useSelector } from "react-redux";
 import { RequestStatusType} from "./redusers/app-reducer";
 import { ErrorSnackbar } from "./todolist/components/Snackbar/Snackbar";
+import { useDispatchWithType } from "./redusers/ActionThunkDispatchType";
+import { reorderTodolistTC } from "./redusers/reduser_todolist";
 
 
 
@@ -21,6 +23,11 @@ function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
     (state) => state.appStatus.status
   );
+  const dispatch = useDispatchWithType();
+
+  const handleReorderTodolist = (sourceTodoId:string, targetTodoId:string) => {
+    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId));
+  };
 
   const {
     todolists,
@@ -33,10 +40,10 @@ function App() {
     changeFilter,
     changeTodoTitle,
     deleteTodolist,
-  } = useAppWithRedux()
+  } = useAppWithRedux();
 
   return (
-    <div className="App">
+    <div className="App" >
       <Box sx={{ flexGrow: 1 }}>
         <ErrorSnackbar />
         <AppBar position="static" sx={{ backgroundColor: "#4caf50" }}>
@@ -72,7 +79,7 @@ function App() {
           {todolists.map((todo) => {
             return (
               <Grid item key={todo.id}>
-                <Paper >
+                <Paper draggable>
                   <Todolist
                     todo={todo}
                     taskTodo={tasks[todo.id]}
@@ -83,6 +90,7 @@ function App() {
                     deleteTodolist={deleteTodolist}
                     changeTaskTitle={changeTaskTitle}
                     changeTodoTitle={changeTodoTitle}
+                    reorderTodolist={handleReorderTodolist}
                   />
                 </Paper>
               </Grid>

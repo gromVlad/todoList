@@ -22,6 +22,7 @@ type todolistType = {
   deleteTodolist: (id: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   changeTodoTitle: (value: string, idTodo: string) => void;
+  reorderTodolist: (sourceTodoId:string, targetTodoId:string) => void
 };
 
 
@@ -51,8 +52,44 @@ export const Todolist = memo((props: todolistType) => {
   const { StyledButton, AllButton, CompletedButton, ActiveButton } =
   useStyledComponentTodolist();
 
+  const handleDragStart = (event:any) => {
+    event.dataTransfer.setData("text/plain", props.todo.id);
+  };
+
+  const handleDragOver = (event:any) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event:any) => {
+    event.preventDefault();
+    event.target.classList.add("dragged-over");
+  };
+
+  const handleDragLeave = (event:any) => {
+    event.target.classList.remove("dragged-over");
+  };
+
+  const handleDrop = (event:any) => {
+    event.preventDefault();
+    const sourceTodoId = event.dataTransfer.getData("text/plain");
+    const targetTodoId = props.todo.id;
+    console.log(sourceTodoId, targetTodoId);
+    
+    props.reorderTodolist(sourceTodoId, targetTodoId);
+    event.target.classList.remove("dragged-over");
+  };
+
+
   return (
-    <div style={{ borderBottom: "2px solid black", margin: "10px" }}>
+    <div
+      className={style.card}
+      draggable
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <div>
         <EditableSpan
           title={props.todo.title}
