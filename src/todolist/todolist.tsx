@@ -28,6 +28,7 @@ type todolistType = {
 
 
 export const Todolist = memo((props: todolistType) => {
+  
 
    const entityStatus = useSelector<AppRootStateType, RequestStatusType>(
      (state) => state.appStatus.status
@@ -69,14 +70,11 @@ export const Todolist = memo((props: todolistType) => {
     event.target.classList.remove("dragged-over");
   };
 
-  const handleDrop = (event:any) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const sourceTodoId = event.dataTransfer.getData("text/plain");
     const targetTodoId = props.todo.id;
-    console.log(sourceTodoId, targetTodoId);
-    
     props.reorderTodolist(sourceTodoId, targetTodoId);
-    event.target.classList.remove("dragged-over");
   };
 
 

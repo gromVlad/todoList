@@ -79,7 +79,7 @@ function App() {
           {todolists.map((todo) => {
             return (
               <Grid item key={todo.id}>
-                <Paper draggable>
+                <Paper >
                   <Todolist
                     todo={todo}
                     taskTodo={tasks[todo.id]}

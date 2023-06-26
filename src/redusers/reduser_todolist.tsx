@@ -46,18 +46,19 @@ export const userReducerTodolist = (
       }));
     }
     case "REORDER-TODOLISTS": {
-      const { sourceId, targetId } = action.payload;
-      const sourceTasks = state.find((tl) => tl.id === sourceId);
-      const targetTasks = state.find((tl) => tl.id === targetId);
-      if (!sourceTasks || !targetTasks) {
+      const { todolistId, putAfterItemId } = action.payload;
+      const todolist = state.find((tl) => tl.id === todolistId);
+      if (!todolist) {
         return state;
       }
-      const sourceIndex = state.indexOf(sourceTasks);
-      const targetIndex = state.indexOf(targetTasks);
-      const newTasks = [...state];
-      newTasks.splice(sourceIndex, 1);
-      newTasks.splice(targetIndex, 0, sourceTasks);
-      return newTasks;
+      const newState = state.filter((tl) => tl.id !== todolistId);
+      const index = newState.findIndex((tl) => tl.id === putAfterItemId);
+      if (index === -1) {
+        newState.unshift(todolist);
+      } else {
+        newState.splice(index + 1, 0, todolist);
+      }
+      return newState;
     }
     default:
       return state;
@@ -65,10 +66,13 @@ export const userReducerTodolist = (
 };
 
 //__________action______________//
-export const reorderTodolistsAC = (sourceId: string, targetId: string) =>
+export const reorderTodolistsAC = (
+  todolistId: string,
+  putAfterItemId: string | null
+) =>
   ({
     type: "REORDER-TODOLISTS",
-    payload: { sourceId, targetId },
+    payload: { todolistId, putAfterItemId },
   } as const);
 
 type ReorderTodolistsACType = ReturnType<typeof reorderTodolistsAC>;
@@ -172,14 +176,14 @@ export type ActionType =
 
 //__________thunk____________//
 export const reorderTodolistTC =
-  (sourceTodoId: string, targetTodoId: string): AppThunk =>
+  (todolistId: string, putAfterItemId: string | null): AppThunk =>
   (dispatch: Dispatch<any>) => {
     dispatch(changeTackAppStatusAC("loading"));
     todolistAPI
-      .reorder(sourceTodoId, targetTodoId)
+      .reorder(todolistId, putAfterItemId)
       .then((response) => {
         if (response.data.resultCode === 0) {
-          dispatch(reorderTodolistsAC(sourceTodoId, targetTodoId));
+          dispatch(reorderTodolistsAC(todolistId, putAfterItemId));
           dispatch(changeTackAppStatusAC("succeeded"));
           dispatch(fetchTodolistAddThunk);
         } else {
