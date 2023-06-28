@@ -23,11 +23,6 @@ function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
     (state) => state.appStatus.status
   );
-  const dispatch = useDispatchWithType();
-
-  const handleReorderTodolist = (sourceTodoId:string, targetTodoId:string) => {
-    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId));
-  };
 
   const {
     todolists,
@@ -90,7 +85,6 @@ function App() {
                     deleteTodolist={deleteTodolist}
                     changeTaskTitle={changeTaskTitle}
                     changeTodoTitle={changeTodoTitle}
-                    reorderTodolist={handleReorderTodolist}
                   />
                 </Paper>
               </Grid>

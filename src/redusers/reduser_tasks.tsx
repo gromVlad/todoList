@@ -73,6 +73,34 @@ export const userReducerTask = (
       stateCopy[action.box.todolistId] = action.box.tasks;
       return stateCopy;
     }
+    case "REORDER_TASKS": {
+      const { sourceTaskId, destinationTaskId, sourceTodoListId } =
+        action.payload;
+      const tasks = state[sourceTodoListId];
+      const reorderedTasks = [...tasks];
+      const sourceIndex = tasks.findIndex((task) => task.id === sourceTaskId);
+      const destinationIndex = tasks.findIndex(
+        (task) => task.id === destinationTaskId
+      );
+
+      if (sourceIndex === -1 || destinationIndex === -1) {
+        return state;
+      }
+
+      reorderedTasks.splice(
+        destinationIndex,
+        0,
+        reorderedTasks.splice(sourceIndex, 1)[0]
+      );
+
+      return {
+        ...state,
+        [sourceTodoListId]: reorderedTasks.map((task, index) => ({
+          ...task,
+          order: index,
+        })),
+      };
+    }
     default:
       return state;
   }
@@ -118,10 +146,21 @@ export const setTackAC = (tasks: Task[], todolistId: string) => {
   } as const;
 };
 
+export const reorderTasksAC = (
+  sourceTaskId: string,
+  destinationTaskId: string ,
+  sourceTodoListId: string 
+) =>
+  ({
+    type: "REORDER_TASKS",
+    payload: { sourceTaskId, destinationTaskId, sourceTodoListId },
+  } as const);
+
 type RemovetaskType = ReturnType<typeof removeTackAC>;
 type AddtaskType = ReturnType<typeof addTackAC>;
 type ChangetaskType = ReturnType<typeof changeTackAC>;
 type SetTasksActionType = ReturnType<typeof setTackAC>;
+type ReorderTasksType = ReturnType<typeof reorderTasksAC>;
 
 export type ActionTypeTasK =
   | RemovetaskType
@@ -131,6 +170,7 @@ export type ActionTypeTasK =
   | RemoveType
   | SetTodolistsActionType
   | SetTasksActionType
+  | ReorderTasksType;
 
 export const fetchTasksThunk=
   (todolistId: string) => (dispatch: Dispatch) => {
@@ -228,3 +268,33 @@ export const updateTask = (
     }
   };
 };
+
+export const reorderTasks =
+  (
+    sourceTodoListId: string,
+    destinationTaskId: string,
+    sourceTaskId: string | null
+  ) =>
+  (dispatch: Dispatch<any>) => {
+    dispatch(changeTackAppStatusAC("loading"));
+    return todolistAPI
+      .reorderTasks(sourceTodoListId, destinationTaskId, sourceTaskId)
+      .then((response) => {
+        if (response.data.resultCode === 0) {
+          const action = reorderTasksAC(
+            sourceTaskId!,
+            destinationTaskId,
+            sourceTodoListId
+          );
+          dispatch(action);
+        } else {
+          handleServerAppError(response.data, dispatch);
+        }
+      })
+      .catch((error) => {
+        handleServerNetworkError(error, dispatch);
+      })
+      .finally(() => {
+        dispatch(changeTackAppStatusAC("succeeded"));
+      });
+  };

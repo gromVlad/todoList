@@ -6,10 +6,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TaskItem } from "./components/taskItem/taskItem";
 import { useStyledComponentTodolist, useTodoList } from "../customHook/useTodolist";
 import { Task, TaskStatusType } from "../api/todolistApi";
-import { FitervalueType, TodolistsTypes } from "../redusers/reduser_todolist";
+import { FitervalueType, TodolistsTypes, reorderTodolistTC } from "../redusers/reduser_todolist";
 import { RequestStatusType } from "../redusers/app-reducer";
 import { AppRootStateType } from "../redusers/state";
 import { useSelector } from "react-redux";
+import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
 
 
 type todolistType = {
@@ -22,7 +23,6 @@ type todolistType = {
   deleteTodolist: (id: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   changeTodoTitle: (value: string, idTodo: string) => void;
-  reorderTodolist: (sourceTodoId:string, targetTodoId:string) => void
 };
 
 
@@ -33,6 +33,8 @@ export const Todolist = memo((props: todolistType) => {
    const entityStatus = useSelector<AppRootStateType, RequestStatusType>(
      (state) => state.appStatus.status
    );
+
+  const dispatch = useDispatchWithType();
 
   const {
     task,
@@ -74,7 +76,7 @@ export const Todolist = memo((props: todolistType) => {
     event.preventDefault();
     const sourceTodoId = event.dataTransfer.getData("text/plain");
     const targetTodoId = props.todo.id;
-    props.reorderTodolist(sourceTodoId, targetTodoId);
+    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId))
   };
 
 
@@ -117,6 +119,7 @@ export const Todolist = memo((props: todolistType) => {
                 element={element}
                 key={element.id}
                 dis={entityStatus === "loading"}
+                
               />
             );
           })}

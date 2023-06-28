@@ -176,8 +176,8 @@ export type ActionType =
 
 //__________thunk____________//
 export const reorderTodolistTC =
-  (todolistId: string, putAfterItemId: string | null): AppThunk =>
-  (dispatch: Dispatch<any>) => {
+  (todolistId: string, putAfterItemId: string | null):any =>
+  (dispatch: any) => {
     dispatch(changeTackAppStatusAC("loading"));
     todolistAPI
       .reorder(todolistId, putAfterItemId)
@@ -185,10 +185,10 @@ export const reorderTodolistTC =
         if (response.data.resultCode === 0) {
           dispatch(reorderTodolistsAC(todolistId, putAfterItemId));
           dispatch(changeTackAppStatusAC("succeeded"));
-          dispatch(fetchTodolistAddThunk);
+          //dispatch(fetchTodolistAddThunk);
         } else {
           handleServerAppError(response.data, dispatch);
-          dispatch(fetchTodolistAddThunk);
+          //dispatch(fetchTodolistAddThunk);
         }
       })
       .catch((error) => {
@@ -202,17 +202,17 @@ export enum ResultCode {
   ERROR_CAPTCHA = 10
 }
 
-export const fetchTodolistAddThunk = (dispatch: Dispatch) => {
-    dispatch(changeTackAppStatusAC("loading"));
-    todolistAPI
-      .getTodolists()
-      .then((res) => {
-        dispatch(setTodolistsAC(res.data));
-        dispatch(changeTackAppStatusAC("succeeded"));
-      })
-      .catch((error) => {
-        handleServerNetworkError(error, dispatch);
-      });
+export const fetchTodolistAddThunk = (): AppThunk => (dispatch: Dispatch) => {
+  dispatch(changeTackAppStatusAC("loading"));
+  todolistAPI
+    .getTodolists()
+    .then((res) => {
+      dispatch(setTodolistsAC(res.data));
+      dispatch(changeTackAppStatusAC("succeeded"));
+    })
+    .catch((error) => {
+      handleServerNetworkError(error, dispatch);
+    });
 }; 
 
 export const addNewTodolistThunk  = (title:string) =>  (dispatch: Dispatch) => {

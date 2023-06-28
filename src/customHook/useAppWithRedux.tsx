@@ -14,7 +14,7 @@ export const useAppWithRedux = () => {
   const dispatch = useDispatchWithType();
 
   useEffect(() => {
-    dispatch(fetchTodolistAddThunk)
+    dispatch(fetchTodolistAddThunk())
   },[])
 
   // task----------------------------
