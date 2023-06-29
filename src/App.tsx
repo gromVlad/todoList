@@ -1,6 +1,4 @@
 import "./App.css";
-import { Todolist } from "./todolist/todolist";
-import { AddItemForm } from "./todolist/components/addItem/addItemForm";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -8,37 +6,29 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Container, Grid, LinearProgress, Paper } from "@mui/material";
-import { useAppWithRedux } from "./customHook/useAppWithRedux";
-import { AppRootStateType} from "./redusers/state";
+import { Container, LinearProgress } from "@mui/material";
+import { AppRootStateType } from "./redusers/state";
 import { useSelector } from "react-redux";
-import { RequestStatusType} from "./redusers/app-reducer";
+import { RequestStatusType } from "./redusers/app-reducer";
 import { ErrorSnackbar } from "./todolist/components/Snackbar/Snackbar";
-import { useDispatchWithType } from "./redusers/ActionThunkDispatchType";
-import { reorderTodolistTC } from "./redusers/reduser_todolist";
-
-
+import { ContainerTodolist } from "./todolist/containerTodolist";
+import {
+  BrowserRouter,
+  HashRouter,
+  Navigate,
+  Route,
+  Router,
+  Routes
+} from "react-router-dom";
+import { Login } from "./todolist/components/Login/Login";
 
 function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
     (state) => state.appStatus.status
   );
 
-  const {
-    todolists,
-    tasks,
-    removetask,
-    newAddTask,
-    changeChekBox,
-    changeTaskTitle,
-    addTodolist,
-    changeFilter,
-    changeTodoTitle,
-    deleteTodolist,
-  } = useAppWithRedux();
-
   return (
-    <div className="App" >
+    <div className="App">
       <Box sx={{ flexGrow: 1 }}>
         <ErrorSnackbar />
         <AppBar position="static" sx={{ backgroundColor: "#4caf50" }}>
@@ -61,41 +51,19 @@ function App() {
           {status === "loading" && <LinearProgress />}
         </AppBar>
       </Box>
-
       <Container fixed>
-        <Grid
-          container
-          style={{ margin: "10px", borderBottom: "2px solid black" }}
-        >
-          <h2>Add Todolist</h2>
-          <AddItemForm newAdd={addTodolist} dis={status === "loading"} />
-        </Grid>
-        <Grid container spacing={8}>
-          {todolists.map((todo) => {
-            return (
-              <Grid item key={todo.id}>
-                <Paper >
-                  <Todolist
-                    todo={todo}
-                    taskTodo={tasks[todo.id]}
-                    removetask={removetask}
-                    changeFilter={changeFilter}
-                    newAddTask={newAddTask}
-                    changeChekBox={changeChekBox}
-                    deleteTodolist={deleteTodolist}
-                    changeTaskTitle={changeTaskTitle}
-                    changeTodoTitle={changeTodoTitle}
-                  />
-                </Paper>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<ContainerTodolist />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/404" element={<h1>404: PAGE NOT FOUND</h1>} />
+            <Route path="*" element={<Navigate to="/404" />} />
+          </Routes>
+        </BrowserRouter>
       </Container>
     </div>
   );
 }
 
 export default App;
-
 

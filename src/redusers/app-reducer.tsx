@@ -1,8 +1,8 @@
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 
 const initialState = {
-  status: "loading" as RequestStatusType,
-  error: null as null | string
+  status: "idle" as RequestStatusType,
+  error: null as null | string,
 };
 
 export type InitialStateType = typeof initialState;

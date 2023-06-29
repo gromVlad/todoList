@@ -74,6 +74,12 @@ type PutTypeTask = {
   deadline: string;
 };
 
+export type LoginType = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha?: boolean;
+};
 
 const instance = axios.create({
   baseURL: "https://social-network.samuraijs.com/api/1.1/",
@@ -85,6 +91,12 @@ const instance = axios.create({
 });
 
 export const todolistAPI = {
+  login(loginBox: LoginType) {
+    const promise = instance.post<ResponseTypeApI<{id:number}>>(`auth/login`, 
+      loginBox,
+    );
+    return promise;
+  },
   updateTodolist(todolistId: string, title: string) {
     const promise = instance.put<
       ResponseTypeApI,
