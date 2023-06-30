@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Container, LinearProgress } from "@mui/material";
+import { CircularProgress, Container, LinearProgress } from "@mui/material";
 import { AppRootStateType } from "./redusers/state";
 import { useSelector } from "react-redux";
 import { RequestStatusType } from "./redusers/app-reducer";
@@ -21,11 +21,42 @@ import {
   Routes
 } from "react-router-dom";
 import { Login } from "./todolist/components/Login/Login";
+import { useEffect } from "react";
+import { useDispatchWithType, useSelectorWithType } from "./redusers/ActionThunkDispatchType";
+import { initializeAppTC, logoutTC } from "./redusers/auth-reducer";
 
 function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
     (state) => state.appStatus.status
   );
+  const isInitialized = useSelectorWithType<boolean>(
+    (state) => state.login.isInit
+  );
+  const isLoggedIn = useSelectorWithType<boolean>(
+    (state) => state.login.isLoggedIn
+  );
+
+
+  const dispacth = useDispatchWithType();
+
+  useEffect(() => {
+    dispacth(initializeAppTC());
+  }, []);
+
+  if (!isInitialized) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: "30%",
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className="App">
@@ -46,7 +77,11 @@ function App() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               TodoList
             </Typography>
-            <Button color="inherit">Login</Button>
+            {isLoggedIn && (
+              <Button color="inherit" onClick={() => dispacth(logoutTC())}>
+                logout
+              </Button>
+            )}
           </Toolbar>
           {status === "loading" && <LinearProgress />}
         </AppBar>

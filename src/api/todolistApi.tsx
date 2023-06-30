@@ -97,6 +97,14 @@ export const todolistAPI = {
     );
     return promise;
   },
+  me(){
+    const promise = instance.get<ResponseTypeApI<{id:number,email:string,login:string}>>(`auth/me`);
+    return promise;
+  },
+  logout(){
+    const promise = instance.delete<ResponseTypeApI>(`auth/login`);
+    return promise;
+  },
   updateTodolist(todolistId: string, title: string) {
     const promise = instance.put<
       ResponseTypeApI,
