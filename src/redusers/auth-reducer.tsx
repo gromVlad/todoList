@@ -1,11 +1,13 @@
 import { Dispatch } from "react";
 import { changeTackAppStatusAC } from "./app-reducer";
-import { LoginType, todolistAPI } from "../api/todolistApi";
+import { LoginType, captchaAPI, todolistAPI } from "../api/todolistApi";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
+import { fetchTodolistAddThunk } from "./reduser_todolist";
 
-const initialState = {
+export const initialState = {
   isLoggedIn: false,
-  isInit:false
+  isInit: false,
+  urlCaptch: null as null | string,
 };
 type InitialStateType = typeof initialState;
 
@@ -18,10 +20,22 @@ export const authReducer = (
       return { ...state, isLoggedIn: action.value };
     case "login/SET-IS-INIT-IN":
       return { ...state, isInit: action.value };
+    case "GET_CAPTCH":
+      return {
+        ...state,
+        urlCaptch: action.box.captch,
+      };
+    case "NULL_CAPTCH":
+      return {
+        ...state,
+        urlCaptch: null,
+      };
     default:
       return state;
   }
 };
+
+//-----------------------------
 // actions
 export const setIsLoggedInAC = (value: boolean) =>
   ({ type: "login/SET-IS-LOGGED-IN", value } as const);
@@ -29,6 +43,29 @@ export const setIsLoggedInAC = (value: boolean) =>
 export const setIsInitInAC = (value: boolean) =>
   ({ type: "login/SET-IS-INIT-IN", value } as const);
 
+export const getCaptchCreator = (captch: null | string) => {
+  return {
+    type: "GET_CAPTCH",
+    box: {
+      captch,
+    },
+  } as const;
+};
+
+export const nullCaptchCreator = () => {
+  return {
+    type: "NULL_CAPTCH",
+  } as const;
+};
+
+// types
+type ActionsType =
+  | ReturnType<typeof setIsLoggedInAC>
+  | ReturnType<typeof setIsInitInAC>
+  | ReturnType<typeof getCaptchCreator>
+  | ReturnType<typeof nullCaptchCreator>;
+
+//----------------------------
 // thunks
 export const loginTC = (data: LoginType) => (dispatch: Dispatch<any>) => {
   dispatch(changeTackAppStatusAC("loading"));
@@ -36,22 +73,20 @@ export const loginTC = (data: LoginType) => (dispatch: Dispatch<any>) => {
     .login(data)
     .then((response) => {
       if (response.data.resultCode === 0) {
-        dispatch(setIsLoggedInAC(true))
-        dispatch(changeTackAppStatusAC("succeeded"));
+        dispatch(setIsLoggedInAC(true));
+        dispatch(nullCaptchCreator());
+      } else if (response.data.resultCode === 10) {
+        dispatch(getCaptchThunk());
       } else {
         handleServerAppError(response.data, dispatch);
       }
     })
     .catch((error) => {
       handleServerNetworkError(error, dispatch);
-    });
+    })
+    .finally(() => dispatch(changeTackAppStatusAC("succeeded")));
 };
 
-// types
-type ActionsType =
-  | ReturnType<typeof setIsLoggedInAC>
-  | ReturnType<typeof setIsInitInAC>;
-  
 export const initializeAppTC = () => (dispatch: Dispatch<any>) => {
   dispatch(setIsInitInAC(false));
   todolistAPI
@@ -66,8 +101,8 @@ export const initializeAppTC = () => (dispatch: Dispatch<any>) => {
     .catch((error) => {
       handleServerNetworkError(error, dispatch);
     })
-    .finally(() => dispatch(setIsInitInAC(true)))
-}
+    .finally(() => dispatch(setIsInitInAC(true)));
+};
 
 export const logoutTC = () => (dispatch: Dispatch<any>) => {
   dispatch(changeTackAppStatusAC("loading"));
@@ -84,4 +119,11 @@ export const logoutTC = () => (dispatch: Dispatch<any>) => {
     .catch((error) => {
       handleServerNetworkError(error, dispatch);
     });
+};
+
+export const getCaptchThunk = () => {
+  return async (dispatch: Dispatch<ActionsType>) => {
+    const resultCaptch = await captchaAPI.getCaptchUser();
+    dispatch(getCaptchCreator(resultCaptch.data.url));
+  };
 };

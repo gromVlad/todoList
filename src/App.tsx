@@ -24,6 +24,7 @@ import { Login } from "./todolist/components/Login/Login";
 import { useEffect } from "react";
 import { useDispatchWithType, useSelectorWithType } from "./redusers/ActionThunkDispatchType";
 import { initializeAppTC, logoutTC } from "./redusers/auth-reducer";
+import { fetchTodolistAddThunk, fetchTodos } from "./redusers/reduser_todolist";
 
 function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
@@ -35,13 +36,19 @@ function App() {
   const isLoggedIn = useSelectorWithType<boolean>(
     (state) => state.login.isLoggedIn
   );
-
+  
+   const isLogin = useSelectorWithType<boolean>(
+     (state) => state.login.isLoggedIn
+   );
 
   const dispacth = useDispatchWithType();
 
   useEffect(() => {
     dispacth(initializeAppTC());
-  }, []);
+    if (isLogin) {
+      dispacth(fetchTodos());
+    }
+  }, [dispacth,isLogin]);
 
   if (!isInitialized) {
     return (
@@ -92,7 +99,7 @@ function App() {
             <Route path="/" element={<ContainerTodolist />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/404" element={<h1>404: PAGE NOT FOUND</h1>} />
-            <Route path="*" element={<Navigate to="/404" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
       </Container>

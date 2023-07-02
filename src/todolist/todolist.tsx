@@ -1,4 +1,4 @@
-import  {  memo } from "react";
+import  {  memo, useEffect } from "react";
 import style from './todolist.module.css'
 import { AddItemForm } from "./components/addItem/addItemForm";
 import { EditableSpan } from "./components/EditableSpan/EditableSpan";
@@ -11,6 +11,7 @@ import { RequestStatusType } from "../redusers/app-reducer";
 import { AppRootStateType } from "../redusers/state";
 import { useSelector } from "react-redux";
 import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
+import { fetchTasksThunk } from "../redusers/reduser_tasks";
 
 
 type todolistType = {

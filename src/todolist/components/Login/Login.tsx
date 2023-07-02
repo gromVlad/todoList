@@ -25,6 +25,10 @@ export const Login = () => {
        (state) => state.login.isLoggedIn
      );
 
+     const urlCaptch = useSelectorWithType<null | string>(
+       (state) => state.login.urlCaptch
+     );
+
      const dispatch = useDispatchWithType();
 
    
@@ -33,6 +37,7 @@ export const Login = () => {
           email: "",
           password: "",
           rememberMe: false,
+          captcha:''
         },
         validate: (values) => {
           const errors: FormikErrorType = {};
@@ -57,7 +62,7 @@ export const Login = () => {
           console.log(values);
 
           formik.resetForm({
-            values: { email: "", password: "", rememberMe: false },
+            values: { email: "", password: "", rememberMe: false, captcha: "" },
           });
         },
       });
@@ -78,7 +83,6 @@ export const Login = () => {
                     href={"https://social-network.samuraijs.com/"}
                     target={"_blank"}
                   >
-                    {" "}
                     here
                   </a>
                 </p>
@@ -113,6 +117,17 @@ export const Login = () => {
                 {formik.touched.password && formik.errors.password ? (
                   <div style={{ color: "red" }}>{formik.errors.password}</div>
                 ) : null}
+                {urlCaptch && (
+                  <>
+                    <img src={urlCaptch} alt="captcha"></img>
+                    <TextField
+                      label="Captcha"
+                      margin="normal"
+                      {...formik.getFieldProps("captcha")}
+                      onBlur={formik.handleBlur}
+                    />
+                  </>
+                )}
                 <FormControlLabel
                   label={"Remember me"}
                   control={<Checkbox />}

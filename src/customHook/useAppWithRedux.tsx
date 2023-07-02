@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
 import { useDispatchWithType, useSelectorWithType } from "../redusers/ActionThunkDispatchType";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, FitervalueType, RemoveTodolistAC, TodolistsTypes, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk } from "../redusers/reduser_todolist";
+import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, FitervalueType, RemoveTodolistAC, TodolistsTypes, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk, fetchTodos } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
@@ -14,14 +14,14 @@ export const useAppWithRedux = () => {
     (state) => state.login.isLoggedIn
   );
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
+
   const dispatch = useDispatchWithType();
 
-  useEffect(() => {
-    if (!isLogin){
-      return
-    } 
-    dispatch(fetchTodolistAddThunk());
-  },[])
+  // useEffect(() => {
+  //   if (isLogin ) {
+  //     dispatch(fetchTodos());
+  //   }
+  // }, [dispatch, isLogin]);
 
   // task----------------------------
   //fun remove task

@@ -117,7 +117,3 @@ describe("userReducerTask reducer", () => {
     expect(newState["2"][1].id).toBe("5");
   });
 });
-function removeTackAс(arg0: string, arg1: string) {
-  throw new Error("Function not implemented.");
-}
-

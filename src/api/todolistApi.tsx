@@ -78,7 +78,7 @@ export type LoginType = {
   email: string;
   password: string;
   rememberMe: boolean;
-  captcha?: boolean;
+  captcha?: string;
 };
 
 const instance = axios.create({
@@ -188,4 +188,19 @@ export const todolistAPI = {
   },
 };
 
+const instance2 = axios.create({
+  baseURL: "https://social-network.samuraijs.com/api/1.0/",
+  withCredentials: true,
+  headers: {
+    // Не забываем заменить API-KEY на собственный
+    "API-KEY": "e908cfda-79ef-4a49-94d7-a2a43ceaff4",
+  },
+});
 
+export const captchaAPI = {
+  getCaptchUser() {
+    return instance2.put(
+      `security/get-captcha-url`
+    );
+  },
+};
