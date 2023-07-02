@@ -41,6 +41,13 @@ function App() {
      (state) => state.login.isLoggedIn
    );
 
+   const state = useSelectorWithType<any>(
+     (state) => state.tasks
+   );
+   console.log(state);
+   
+
+  
   const dispacth = useDispatchWithType();
 
   useEffect(() => {

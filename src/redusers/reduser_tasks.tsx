@@ -6,16 +6,11 @@ import {
   fetchTodolistAddThunk,
   fetchTodos,
 } from "./reduser_todolist";
-import {
-  Task,
-  TaskStatusType,
-  todolistAPI,
-} from "../api/todolistApi";
+import { Task, TaskStatusType, todolistAPI } from "../api/todolistApi";
 import { Dispatch } from "redux";
 import { AppRootStateType } from "./state";
 import { changeTackAppStatusAC } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
-
 
 const REMOVE_TASK = "REMOVE_TASK";
 const ADD_TASK = "ADD_TASK";
@@ -75,6 +70,29 @@ export const userReducerTask = (
       stateCopy[action.box.todolistId] = action.box.tasks;
       return stateCopy;
     }
+    case "REORDER_TASK_IN_LIST": {
+      const { idTodoList, sourceTaskId, targetTaskId } = action.payload;
+
+      // Определяем новый массив для todo list
+      const todoList = [...state[idTodoList]];
+
+      // Находим индексы задач
+      const sourceIndex = todoList.findIndex((t) => t.id === sourceTaskId);
+      const targetIndex = todoList.findIndex((t) => t.id === targetTaskId);
+
+      // Сохраняем задачу для swap
+      const task = todoList[sourceIndex];
+
+      // Меняем местами задачи
+      todoList[sourceIndex] = todoList[targetIndex];
+      todoList[targetIndex] = task;
+
+      // Заменяем в состоянии обновленный массив задач для этого todo list
+      return {
+        ...state,
+        [idTodoList]: todoList,
+      };
+    }
     default:
       return state;
   }
@@ -120,29 +138,21 @@ export const setTackAC = (tasks: Task[], todolistId: string) => {
   } as const;
 };
 
-export const reorderTasksAC = (
+export const reorderTaskInListAC = (
+  idTodoList: string,
   sourceTaskId: string,
-  destinationTaskId: string,
-  sourceIndex: number,
-  destinationIndex: number
-) => {
-  return {
-    type: "DRAG_TASK",
-    payload: {
-      sourceTaskId,
-      destinationTaskId,
-      sourceIndex,
-      destinationIndex,
-    },
-  } as const;
-};
-
+  targetTaskId: string
+) =>
+  ({
+    type: "REORDER_TASK_IN_LIST",
+    payload: { idTodoList, sourceTaskId, targetTaskId },
+  } as const);
 
 type RemovetaskType = ReturnType<typeof removeTackAC>;
 type AddtaskType = ReturnType<typeof addTackAC>;
 type ChangetaskType = ReturnType<typeof changeTackAC>;
 type SetTasksActionType = ReturnType<typeof setTackAC>;
-type ReorderTasksType = ReturnType<typeof reorderTasksAC>;
+type ReorderTasksType = ReturnType<typeof reorderTaskInListAC>;
 
 export type ActionTypeTasK =
   | RemovetaskType
@@ -154,7 +164,7 @@ export type ActionTypeTasK =
   | SetTasksActionType
   | ReorderTasksType;
 
-export const fetchTasksThunk=
+export const fetchTasksThunk =
   (todolistId: string) => (dispatch: Dispatch<any>) => {
     dispatch(changeTackAppStatusAC("loading"));
     todolistAPI
@@ -203,8 +213,7 @@ export const addNewTasksThunk =
       .catch((error) => {
         handleServerNetworkError(error, dispatch);
       });
-    }
-
+  };
 
 type PutTypeTask = {
   title?: string;
@@ -251,3 +260,20 @@ export const updateTask = (
   };
 };
 
+export const reorderTaskInListTC =
+  (idTodoList: string, sourceTaskId: string, targetTaskId: string) =>
+  (dispatch: Dispatch) => {
+    dispatch(changeTackAppStatusAC("loading"));
+    todolistAPI
+      .reorderTasks(idTodoList, sourceTaskId, targetTaskId)
+      .then((res) => {
+        if (res.data.resultCode === ResultCode.OK) {
+          dispatch(reorderTaskInListAC(idTodoList, sourceTaskId, targetTaskId));
+        } else {
+          handleServerAppError(res.data, dispatch);
+        }
+      })
+      .catch((error) => {
+        handleServerNetworkError(error, dispatch);
+      });
+  };
