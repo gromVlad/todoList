@@ -62,6 +62,8 @@ export const userReducerTodolist = (
       }
       return newState;
     }
+    case "CLEAR-DATA-ALL": 
+      return []
     default:
       return state;
   }
@@ -82,6 +84,10 @@ type ReorderTodolistsACType = ReturnType<typeof reorderTodolistsAC>;
 
 export const RemoveTodolistAC = (todolistId: string): RemoveType => {
   return { type: "REMOVE-TODOLIST", id: todolistId };
+};
+
+export const ClearDataAlltAC = (): RemoveALLType => {
+  return { type: "CLEAR-DATA-ALL" };
 };
 
 export const AddTodoTypeAC = (todoNew: TodolistType): AddTodoType => {
@@ -160,10 +166,15 @@ type ChangeTodoFilterType = {
   filter: FitervalueType;
 };
 
+
 type ReorderTodolistType = {
   type: "REORDER_TODOLIST";
   todolistId: string;
   putAfterItemId: string | null;
+};
+
+export type RemoveALLType = {
+  type: "CLEAR-DATA-ALL";
 };
 
 export type ActionType =
@@ -175,6 +186,7 @@ export type ActionType =
   | ChangeEntityType
   | ReorderTodolistType
   | ReorderTodolistsACType
+  | RemoveALLType;
 
 //__________thunk____________//
 export const reorderTodolistTC =

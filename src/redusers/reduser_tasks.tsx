@@ -1,5 +1,6 @@
 import {
   AddTodoType,
+  RemoveALLType,
   RemoveType,
   ResultCode,
   SetTodolistsActionType,
@@ -93,6 +94,8 @@ export const userReducerTask = (
         [idTodoList]: todoList,
       };
     }
+    case "CLEAR-DATA-ALL":
+      return {};
     default:
       return state;
   }
@@ -162,7 +165,8 @@ export type ActionTypeTasK =
   | RemoveType
   | SetTodolistsActionType
   | SetTasksActionType
-  | ReorderTasksType;
+  | ReorderTasksType
+  | RemoveALLType
 
 export const fetchTasksThunk =
   (todolistId: string) => (dispatch: Dispatch<any>) => {

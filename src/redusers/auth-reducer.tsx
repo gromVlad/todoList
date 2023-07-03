@@ -2,7 +2,7 @@ import { Dispatch } from "react";
 import { changeTackAppStatusAC } from "./app-reducer";
 import { LoginType, captchaAPI, todolistAPI } from "../api/todolistApi";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
-import { fetchTodolistAddThunk } from "./reduser_todolist";
+import { ClearDataAlltAC } from "./reduser_todolist";
 
 export const initialState = {
   isLoggedIn: false,
@@ -112,6 +112,7 @@ export const logoutTC = () => (dispatch: Dispatch<any>) => {
       if (res.data.resultCode === 0) {
         dispatch(setIsLoggedInAC(false));
         dispatch(changeTackAppStatusAC("succeeded"));
+        dispatch(ClearDataAlltAC());
       } else {
         handleServerAppError(res.data, dispatch);
       }
