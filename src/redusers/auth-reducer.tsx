@@ -13,7 +13,7 @@ type InitialStateType = typeof initialState;
 
 export const authReducer = (
   state: InitialStateType = initialState,
-  action: ActionsType
+  action: ActionsAuthType
 ): InitialStateType => {
   switch (action.type) {
     case "login/SET-IS-LOGGED-IN":
@@ -59,7 +59,7 @@ export const nullCaptchCreator = () => {
 };
 
 // types
-type ActionsType =
+export type ActionsAuthType =
   | ReturnType<typeof setIsLoggedInAC>
   | ReturnType<typeof setIsInitInAC>
   | ReturnType<typeof getCaptchCreator>
@@ -123,7 +123,7 @@ export const logoutTC = () => (dispatch: Dispatch<any>) => {
 };
 
 export const getCaptchThunk = () => {
-  return async (dispatch: Dispatch<ActionsType>) => {
+  return async (dispatch: Dispatch<ActionsAuthType>) => {
     const resultCaptch = await captchaAPI.getCaptchUser();
     dispatch(getCaptchCreator(resultCaptch.data.url));
   };
