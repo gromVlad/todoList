@@ -207,11 +207,11 @@ export const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(allActionsTodolist.addTodoList, (state, action) => {
       state[action.payload.id] = [];
-    });
-    builder.addCase(allActionsTodolist.removeTodoList, (state, action) => {
+    })
+    .addCase(allActionsTodolist.removeTodoList, (state, action) => {
       delete state[action.payload];
-    });
-    builder.addCase(allActionsTodolist.setTodoLists, (state, action) => {
+    })
+    .addCase(allActionsTodolist.setTodoLists, (state, action) => {
       action.payload.forEach((tl) => {
         state[tl.id] = [];
       });
