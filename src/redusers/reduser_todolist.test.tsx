@@ -1,4 +1,13 @@
-import { AddTodoTypeAC, ChangeEntityStatusTodoTitleAC, ChangeTodoFilterAC, ChangeTodoTitleAC, RemoveTodolistAC, TodolistsTypes, setTodolistsAC, userReducerTodolist } from "./reduser_todolist";
+import {
+  AddTodoTypeAC,
+  ChangeEntityStatusTodoTitleAC,
+  ChangeTodoFilterAC,
+  ChangeTodoTitleAC,
+  RemoveTodolistAC,
+  TodolistsTypes,
+  setTodolistsAC,
+  userReducerTodolist,
+} from "./reduser_todolist";
 
 describe("userReducerTodolist reducer", () => {
   let state: TodolistsTypes[] = [];
@@ -86,7 +95,4 @@ describe("userReducerTodolist reducer", () => {
 
     expect(newState[0].entityStatus).toBeFalsy();
   });
-
-
 });
-

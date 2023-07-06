@@ -12,35 +12,20 @@ import { useSelector } from "react-redux";
 import { RequestStatusType } from "./redusers/app-reducer";
 import { ErrorSnackbar } from "./todolist/components/Snackbar/Snackbar";
 import { ContainerTodolist } from "./todolist/containerTodolist";
-import {
-  BrowserRouter,
-  HashRouter,
-  Navigate,
-  Route,
-  Router,
-  Routes
-} from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Login } from "./todolist/components/Login/Login";
 import { useEffect } from "react";
 import { useDispatchWithType, useSelectorWithType } from "./redusers/ActionThunkDispatchType";
 import { initializeAppTC, logoutTC } from "./redusers/auth-reducer";
-import { fetchTodolistAddThunk, fetchTodos } from "./redusers/reduser_todolist";
+import { fetchTodos } from "redusers/reduser_todolist";
 
 function App() {
-  const status = useSelector<AppRootStateType, RequestStatusType>(
-    (state) => state.appStatus.status
-  );
-  const isInitialized = useSelectorWithType<boolean>(
-    (state) => state.login.isInit
-  );
-  const isLoggedIn = useSelectorWithType<boolean>(
-    (state) => state.login.isLoggedIn
-  );
-  
-   const isLogin = useSelectorWithType<boolean>(
-     (state) => state.login.isLoggedIn
-   );
-   
+  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.appStatus.status);
+  const isInitialized = useSelectorWithType<boolean>((state) => state.login.isInit);
+  const isLoggedIn = useSelectorWithType<boolean>((state) => state.login.isLoggedIn);
+
+  const isLogin = useSelectorWithType<boolean>((state) => state.login.isLoggedIn);
+
   const dispacth = useDispatchWithType();
 
   useEffect(() => {
@@ -48,7 +33,7 @@ function App() {
     if (isLogin) {
       dispacth(fetchTodos());
     }
-  }, [dispacth,isLogin]);
+  }, [dispacth, isLogin]);
 
   if (!isInitialized) {
     return (
@@ -108,4 +93,3 @@ function App() {
 }
 
 export default App;
-

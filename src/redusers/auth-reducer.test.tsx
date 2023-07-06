@@ -31,5 +31,4 @@ describe("authReducer", () => {
     const newState = authReducer(initialState, action);
     expect(newState.urlCaptch).toBe(null);
   });
-
 });

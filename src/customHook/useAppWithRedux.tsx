@@ -1,35 +1,31 @@
-import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
+import { useCallback } from "react";
+import { useSelector } from "react-redux";
+import { TaskType, addNewTasksThunk ,removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
 import { useDispatchWithType, useSelectorWithType } from "../redusers/ActionThunkDispatchType";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, FitervalueType, RemoveTodolistAC, TodolistsTypes, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk, fetchTodos } from "../redusers/reduser_todolist";
+import {
+  FitervalueType,
+  addNewTodolistThunk,
+  changeTitleTodolistThunk,
+  deleteTodolistThunk,
+  TodoListTypeState,
+  allActionsTodolist
+} from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
 export const useAppWithRedux = () => {
-  const todolists = useSelector<AppRootStateType, TodolistsTypes[]>(
-    (state) => state.todolist
-  );
-  const isLogin = useSelectorWithType<boolean>(
-    (state) => state.login.isLoggedIn
-  );
+  const todolists = useSelector<AppRootStateType, TodoListTypeState[]>((state) => state.todolist);
+  const isLogin = useSelectorWithType<boolean>((state) => state.login.isLoggedIn);
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
 
   const dispatch = useDispatchWithType();
 
-  // useEffect(() => {
-  //   if (isLogin ) {
-  //     dispatch(fetchTodos());
-  //   }
-  // }, [dispatch, isLogin]);
-
-  // task----------------------------
   //fun remove task
   const removetask = useCallback(
     (id: string, idTodo: string) => {
       dispatch(removeTasksThunk(id, idTodo));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //add new task
@@ -37,23 +33,23 @@ export const useAppWithRedux = () => {
     (value: string, id: string) => {
       dispatch(addNewTasksThunk(value, id));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //fun change chekbox
   const changeChekBox = useCallback(
     (id: string, status: TaskStatusType, idTodo: string) => {
-      dispatch(updateTask(id, idTodo, {status}));
+      dispatch(updateTask(id, idTodo, { status }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //change task title
   const changeTaskTitle = useCallback(
     (id: string, title: string, idTodo: string) => {
-      dispatch(updateTask(id, idTodo, {title}));
+      dispatch(updateTask(id, idTodo, { title }));
     },
-    [dispatch]
+    [dispatch],
   );
   //------------task
 
@@ -63,7 +59,7 @@ export const useAppWithRedux = () => {
     (idTodo: string) => {
       dispatch(deleteTodolistThunk(idTodo));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //change task title
@@ -71,7 +67,7 @@ export const useAppWithRedux = () => {
     (value: string, idTodo: string) => {
       dispatch(changeTitleTodolistThunk(idTodo, value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //add new todolist
@@ -79,15 +75,15 @@ export const useAppWithRedux = () => {
     (title: string) => {
       dispatch(addNewTodolistThunk(title));
     },
-    [dispatch]
+    [dispatch],
   );
 
   //return new value in state
   const changeFilter = useCallback(
     (value: FitervalueType, id: string) => {
-      dispatch(ChangeTodoFilterAC(id, value));
+      dispatch(allActionsTodolist.changeTodoListFilter({ id, filter: value}));
     },
-    [dispatch]
+    [dispatch],
   );
   //--todolist
   return {
@@ -102,4 +98,4 @@ export const useAppWithRedux = () => {
     changeTodoTitle,
     deleteTodolist,
   };
-}
+};

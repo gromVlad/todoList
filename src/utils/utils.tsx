@@ -1,26 +1,20 @@
 import { Dispatch } from "react";
 import { ResponseTypeApI } from "../api/todolistApi";
-import { ActionsAppReducerStatusType, changeTackAppErrorAC, changeTackAppStatusAC } from "../redusers/app-reducer";
+import { ActionsAppReducer, RequestStatusType } from "../redusers/app-reducer";
 
 // generic function
-export const handleServerAppError = <T,>(
-  data: ResponseTypeApI<T>,
-  dispatch: ErrorUtilsDispatchType
-) => {
+export const handleServerAppError = <T,>(data: ResponseTypeApI<T>, dispatch: ErrorUtilsDispatchType) => {
   if (data.messages.length) {
-    dispatch(changeTackAppErrorAC(data.messages[0]));
+    dispatch(ActionsAppReducer.changeTackAppErrorAC({error:data.messages[0]}));
   } else {
-    dispatch(changeTackAppErrorAC("Some error occurred"));
+    dispatch(ActionsAppReducer.changeTackAppErrorAC({error:"Some error occurred"}));
   }
-  dispatch(changeTackAppStatusAC("failed"));
+  dispatch(ActionsAppReducer.changeTackAppStatusAC({status:"failed"}));
 };
 
-export const handleServerNetworkError = (
-  error: { message: string },
-  dispatch: ErrorUtilsDispatchType
-) => {
-  dispatch(changeTackAppErrorAC(error.message));
-  dispatch(changeTackAppStatusAC("failed"));
+export const handleServerNetworkError = (error: { message: string }, dispatch: ErrorUtilsDispatchType) => {
+  dispatch(ActionsAppReducer.changeTackAppErrorAC({error:error.message}));
+  dispatch(ActionsAppReducer.changeTackAppStatusAC({status:"failed"}));
 };
 
-type ErrorUtilsDispatchType = Dispatch<ActionsAppReducerStatusType>;
+type ErrorUtilsDispatchType = Dispatch<any >;

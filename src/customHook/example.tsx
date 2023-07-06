@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 
-type InitStateType = any
+type InitStateType = any;
 
-
-function useCustomHook(
-  initialValue: InitStateType,
-  newValueInit: InitStateType
-) {
+function useCustomHook(initialValue: InitStateType, newValueInit: InitStateType) {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {

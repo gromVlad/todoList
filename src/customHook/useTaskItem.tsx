@@ -8,7 +8,7 @@ export const useTaskItem = (
   changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void,
   changeTaskTitle: (id: string, value: string, idTodo: string) => void,
   id: string,
-  element: Task
+  element: Task,
 ) => {
   //fun removetask in map
   const funRemoveTask = () => {
@@ -17,13 +17,7 @@ export const useTaskItem = (
 
   //fun change checkbox in map
   const funChangeChekbox = (event: ChangeEvent<HTMLInputElement>) => {
-    changeChekBox(
-      element.id,
-      event.currentTarget.checked
-        ? TaskStatusType.Completed
-        : TaskStatusType.New,
-      id
-    );
+    changeChekBox(element.id, event.currentTarget.checked ? TaskStatusType.Completed : TaskStatusType.New, id);
   };
 
   //change task Title in map
@@ -31,7 +25,7 @@ export const useTaskItem = (
     (value: string) => {
       changeTaskTitle(element.id, value, id);
     },
-    [changeTaskTitle, element.id, id]
+    [changeTaskTitle, element.id, id],
   );
 
   return {
@@ -57,7 +51,7 @@ export const useStyledTaskItem = () => {
       transform: "scale(1.1)",
     },
   }));
-  
+
   return {
     StyledButton,
   };

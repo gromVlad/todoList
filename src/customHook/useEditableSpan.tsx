@@ -2,10 +2,7 @@ import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 
-export const useEditableSpan = (
-  title: string,
-  changeSpan: (value: string) => void
-) => {
+export const useEditableSpan = (title: string, changeSpan: (value: string) => void) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(title);
 
@@ -63,4 +60,4 @@ export const useStyledComponentEditableSpan = () => {
   return {
     StyledTextField,
   };
-}
+};

@@ -18,9 +18,7 @@ const settings = {
 export const GetTodolists = () => {
   const [state, setState] = useState<any>(null);
   useEffect(() => {
-    axios
-      .get("https://social-network.samuraijs.com/api/1.1/todo-lists", settings)
-      .then((res) => setState(res.data));
+    axios.get("https://social-network.samuraijs.com/api/1.1/todo-lists", settings).then((res) => setState(res.data));
   }, []);
   return <div>{JSON.stringify(state)}</div>;
 }; //[]
@@ -31,11 +29,7 @@ export const CreateTodolist = () => {
   const [state, setState] = useState<any>(null);
   useEffect(() => {
     axios
-      .post(
-        "https://social-network.samuraijs.com/api/1.1/todo-lists",
-        { title: "hello" },
-        settings
-      )
+      .post("https://social-network.samuraijs.com/api/1.1/todo-lists", { title: "hello" }, settings)
       .then((res) => setState(res.data));
   }, []);
 
@@ -49,10 +43,7 @@ export const DeleteTodolist = () => {
   const [state, setState] = useState<any>(null);
   useEffect(() => {
     axios
-      .delete(
-        `https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId1}`,
-        settings
-      )
+      .delete(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId1}`, settings)
       .then((res) => setState(res.data));
   }, []);
 
@@ -69,7 +60,7 @@ export const UpdateTodolistTitle = () => {
       .put(
         `https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId2}`,
         { title: "new title with id" },
-        settings
+        settings,
       )
       .then((res) => setState(res.data));
   }, []);
@@ -275,12 +266,12 @@ export const UpdateTaskDAL = () => {
 
   const obj = {
     title: stateValueText,
-    description:"",
+    description: "",
     status: 2,
     priority: 3,
     startDate: "",
-    deadline: ""
-  }
+    deadline: "",
+  };
 
   const updateTask = () => {
     todolistAPI.updateTask(stateValueId, stateValueidTask, obj).then((res) => {

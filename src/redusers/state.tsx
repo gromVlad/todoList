@@ -1,9 +1,9 @@
-import { applyMiddleware, combineReducers, createStore } from "redux";
+import { combineReducers } from "redux";
 import { ActionTypeTasK, userReducerTask } from "./reduser_tasks";
 import { ActionType, userReducerTodolist } from "./reduser_todolist";
-import thunk, { ThunkAction } from "redux-thunk";
-import { ActionsAppReducerStatusType, appReducerStatus } from "./app-reducer";
-import { ActionsAuthType, authReducer } from "./auth-reducer";
+import { appReducerStatus } from "./app-reducer";
+import { authReducer } from "./auth-reducer";
+import { configureStore } from "@reduxjs/toolkit";
 
 // объединяя reducer-ы с помощью combineReducers,
 // мы задаём структуру нашего единственного объекта-состояния
@@ -11,23 +11,20 @@ const rootReducer = combineReducers({
   tasks: userReducerTask,
   todolist: userReducerTodolist,
   appStatus: appReducerStatus,
-  login:authReducer
+  login: authReducer,
 });
 
-// непосредственно создаём store
-export const store = createStore(rootReducer,applyMiddleware(thunk));
+export const store = configureStore({
+  reducer: rootReducer
+})
+//export const store = createStore(rootReducer, applyMiddleware(thunk));
 
 // определить автоматически тип всего объекта состояния
-export type AppRootStateType = ReturnType<typeof rootReducer>
+export type AppRootStateType = ReturnType<typeof rootReducer>;
 
 //вся типизация actions
-export type AllActionsType =
-  | ActionType
-  | ActionTypeTasK
-  | ActionsAuthType
-  | ActionsAppReducerStatusType
+export type AllActionsType = ActionType | ActionTypeTasK 
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
 // @ts-ignore
-window.store = store
-
+window.store = store;

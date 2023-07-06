@@ -6,19 +6,14 @@ type EditableSpanType = {
   changeSpan: (value: string) => void;
 };
 
-export const EditableSpan = memo( (props: EditableSpanType) => {
+export const EditableSpan = memo((props: EditableSpanType) => {
+  const { isEditing, setIsEditing, inputValue, handleChange, handleKeyDown, handleDoubleClick } = useEditableSpan(
+    props.title,
+    props.changeSpan,
+  );
 
-  const {
-    isEditing,
-    setIsEditing,
-    inputValue,
-    handleChange,
-    handleKeyDown,
-    handleDoubleClick,
-  } = useEditableSpan(props.title, props.changeSpan);
+  const { StyledTextField } = useStyledComponentEditableSpan();
 
-  const {StyledTextField} = useStyledComponentEditableSpan()
-  
   return isEditing ? (
     <StyledTextField
       value={inputValue}
@@ -41,4 +36,4 @@ export const EditableSpan = memo( (props: EditableSpanType) => {
       {props.title}
     </span>
   );
-})
+});

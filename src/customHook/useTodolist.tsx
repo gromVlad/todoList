@@ -14,7 +14,7 @@ export const useTodoList = (
   id: string,
   deleteTodolist: (id: string) => void,
   newAddTask: (value: string, id: string) => void,
-  changeTodoTitle: (value: string, idTodo: string) => void
+  changeTodoTitle: (value: string, idTodo: string) => void,
 ) => {
   const dispatch = useDispatchWithType();
 
@@ -40,7 +40,7 @@ export const useTodoList = (
     (value: FitervalueType, id: string) => {
       changeFilter(value, id);
     },
-    [changeFilter]
+    [changeFilter],
   );
 
   //fun delete Todolist
@@ -53,7 +53,7 @@ export const useTodoList = (
     (value: string) => {
       newAddTask(value, id);
     },
-    [newAddTask, id]
+    [newAddTask, id],
   );
 
   //change todo title
@@ -61,7 +61,7 @@ export const useTodoList = (
     (value: string) => {
       changeTodoTitle(value, id);
     },
-    [changeTodoTitle, id]
+    [changeTodoTitle, id],
   );
   return {
     task,
@@ -123,4 +123,4 @@ export const useStyledComponentTodolist = () => {
     CompletedButton,
     ActiveButton,
   };
-}
+};

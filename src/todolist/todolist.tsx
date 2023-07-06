@@ -1,21 +1,19 @@
-import  {  memo, useEffect } from "react";
-import style from './todolist.module.css'
+import { memo, useEffect } from "react";
+import style from "./todolist.module.css";
 import { AddItemForm } from "./components/addItem/addItemForm";
 import { EditableSpan } from "./components/EditableSpan/EditableSpan";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TaskItem } from "./components/taskItem/taskItem";
 import { useStyledComponentTodolist, useTodoList } from "../customHook/useTodolist";
 import { Task, TaskStatusType } from "../api/todolistApi";
-import { FitervalueType, TodolistsTypes, reorderTodolistTC } from "../redusers/reduser_todolist";
+import { FitervalueType, TodoListTypeState, reorderTodolistTC } from "../redusers/reduser_todolist";
 import { RequestStatusType } from "../redusers/app-reducer";
 import { AppRootStateType } from "../redusers/state";
 import { useSelector } from "react-redux";
 import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
-import { fetchTasksThunk } from "../redusers/reduser_tasks";
-
 
 type todolistType = {
-  todo: TodolistsTypes;
+  todo: TodoListTypeState;
   taskTodo: Task[];
   removetask: (id: string, idtodo: string) => void;
   changeFilter: (value: FitervalueType, id: string) => void;
@@ -26,50 +24,37 @@ type todolistType = {
   changeTodoTitle: (value: string, idTodo: string) => void;
 };
 
-
-
 export const Todolist = memo((props: todolistType) => {
-  
-
-   const entityStatus = useSelector<AppRootStateType, RequestStatusType>(
-     (state) => state.appStatus.status
-   );
+  const entityStatus = useSelector<AppRootStateType, RequestStatusType>((state) => state.appStatus.status);
 
   const dispatch = useDispatchWithType();
 
-  const {
-    task,
-    changeValueButton,
-    funRemoveTodolist,
-    newAddtaskOnValue,
-    changeTodoTitleRet,
-  } = useTodoList(
-  props.todo.filter,
-  props.taskTodo,
-  props.changeFilter,
-  props.todo.id,
-  props.deleteTodolist,
-  props.newAddTask,
-  props.changeTodoTitle,
-)
+  const { task, changeValueButton, funRemoveTodolist, newAddtaskOnValue, changeTodoTitleRet } = useTodoList(
+    props.todo.filter,
+    props.taskTodo,
+    props.changeFilter,
+    props.todo.id,
+    props.deleteTodolist,
+    props.newAddTask,
+    props.changeTodoTitle,
+  );
 
-  const { StyledButton, AllButton, CompletedButton, ActiveButton } =
-  useStyledComponentTodolist();
+  const { StyledButton, AllButton, CompletedButton, ActiveButton } = useStyledComponentTodolist();
 
-  const handleDragStart = (event:any) => {
+  const handleDragStart = (event: any) => {
     event.dataTransfer.setData("text/plain", props.todo.id);
   };
 
-  const handleDragOver = (event:any) => {
+  const handleDragOver = (event: any) => {
     event.preventDefault();
   };
 
-  const handleDragEnter = (event:any) => {
+  const handleDragEnter = (event: any) => {
     event.preventDefault();
     event.target.classList.add("dragged-over");
   };
 
-  const handleDragLeave = (event:any) => {
+  const handleDragLeave = (event: any) => {
     event.target.classList.remove("dragged-over");
   };
 
@@ -77,9 +62,8 @@ export const Todolist = memo((props: todolistType) => {
     event.preventDefault();
     const sourceTodoId = event.dataTransfer.getData("text/plain");
     const targetTodoId = props.todo.id;
-    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId))
+    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId));
   };
-
 
   return (
     <div
@@ -92,21 +76,11 @@ export const Todolist = memo((props: todolistType) => {
       onDrop={handleDrop}
     >
       <div>
-        <EditableSpan
-          title={props.todo.title}
-          changeSpan={changeTodoTitleRet}
-        />
-        <StyledButton
-          variant="contained"
-          onClick={funRemoveTodolist}
-          disabled={props.todo.entityStatus}
-        >
+        <EditableSpan title={props.todo.title} changeSpan={changeTodoTitleRet} />
+        <StyledButton variant="contained" onClick={funRemoveTodolist} disabled={props.todo.entityStatus}>
           <DeleteIcon />
         </StyledButton>
-        <AddItemForm
-          newAdd={newAddtaskOnValue}
-          dis={entityStatus === "loading"}
-        />
+        <AddItemForm newAdd={newAddtaskOnValue} dis={entityStatus === "loading"} />
 
         {/* ------map-------*/}
         <div>
@@ -120,7 +94,6 @@ export const Todolist = memo((props: todolistType) => {
                 element={element}
                 key={element.id}
                 dis={entityStatus === "loading"}
-                
               />
             );
           })}
@@ -130,27 +103,21 @@ export const Todolist = memo((props: todolistType) => {
         <div>
           <AllButton
             variant="contained"
-            className={
-              props.todo.filter === "all" ? style["active-filter"] : ""
-            }
+            className={props.todo.filter === "all" ? style["active-filter"] : ""}
             onClick={() => changeValueButton("all", props.todo.id)}
           >
             All
           </AllButton>
           <CompletedButton
             variant="contained"
-            className={
-              props.todo.filter === "completed" ? style["active-filter"] : ""
-            }
+            className={props.todo.filter === "completed" ? style["active-filter"] : ""}
             onClick={() => changeValueButton("completed", props.todo.id)}
           >
             Active
           </CompletedButton>
           <ActiveButton
             variant="contained"
-            className={
-              props.todo.filter === "active" ? style["active-filter"] : ""
-            }
+            className={props.todo.filter === "active" ? style["active-filter"] : ""}
             onClick={() => changeValueButton("active", props.todo.id)}
           >
             Completed
@@ -159,4 +126,4 @@ export const Todolist = memo((props: todolistType) => {
       </div>
     </div>
   );
-})
+});

@@ -22,7 +22,7 @@ type DeleteTodolistResponseType = {
   data: {};
 };
 
-export type ResponseTypeApI<Item={}> = {
+export type ResponseTypeApI<Item = {}> = {
   resultCode: number;
   messages: Array<string>;
   //fieldsErrors: Array<string>;
@@ -37,19 +37,19 @@ type TaskTodoType = {
   error: string;
 };
 
-export enum TaskStatusType  {
+export enum TaskStatusType {
   New = 0,
   InProgress = 1,
   Completed = 2,
-  Draft = 3
+  Draft = 3,
 }
 
-export enum TaskPriorities  {
+export enum TaskPriorities {
   Low = 0,
   Middle = 1,
   Hi = 2,
   Urgently = 3,
-  later = 4
+  later = 4,
 }
 
 export type Task = {
@@ -92,27 +92,24 @@ const instance = axios.create({
 
 export const todolistAPI = {
   login(loginBox: LoginType) {
-    const promise = instance.post<ResponseTypeApI<{id:number}>>(`auth/login`, 
-      loginBox,
-    );
+    const promise = instance.post<ResponseTypeApI<{ id: number }>>(`auth/login`, loginBox);
     return promise;
   },
-  me(){
-    const promise = instance.get<ResponseTypeApI<{id:number,email:string,login:string}>>(`auth/me`);
+  me() {
+    const promise = instance.get<ResponseTypeApI<{ id: number; email: string; login: string }>>(`auth/me`);
     return promise;
   },
-  logout(){
+  logout() {
     const promise = instance.delete<ResponseTypeApI>(`auth/login`);
     return promise;
   },
   updateTodolist(todolistId: string, title: string) {
-    const promise = instance.put<
-      ResponseTypeApI,
-      AxiosResponse<ResponseTypeApI>,
-      { title: string }
-    >(`todo-lists/${todolistId}`, {
-      title: title,
-    });
+    const promise = instance.put<ResponseTypeApI, AxiosResponse<ResponseTypeApI>, { title: string }>(
+      `todo-lists/${todolistId}`,
+      {
+        title: title,
+      },
+    );
     return promise;
   },
   getTodolists() {
@@ -120,18 +117,13 @@ export const todolistAPI = {
     return promise;
   },
   deleteTodolist(todolistId: string) {
-    const promise = instance.delete<ResponseTypeApI>(
-      `todo-lists/${todolistId}`
-    );
+    const promise = instance.delete<ResponseTypeApI>(`todo-lists/${todolistId}`);
     return promise;
   },
   createTodolist(title: string) {
-    const promise = instance.post<ResponseTypeApI<{ item: TodolistType }>>(
-      "todo-lists",
-      {
-        title,
-      }
-    );
+    const promise = instance.post<ResponseTypeApI<{ item: TodolistType }>>("todo-lists", {
+      title,
+    });
     return promise;
   },
 
@@ -143,48 +135,34 @@ export const todolistAPI = {
 
   //---task
   getTask(todolistId: string) {
-    const promise = instance.get<TaskTodoType>(
-      `todo-lists/${todolistId}/tasks`
-    );
+    const promise = instance.get<TaskTodoType>(`todo-lists/${todolistId}/tasks`);
     return promise;
   },
 
   deleteTask(todolistId: string, taskId: string) {
-    const promise = instance.delete<ResponseTypeApI>(
-      `todo-lists/${todolistId}/tasks/${taskId}`
-    );
+    const promise = instance.delete<ResponseTypeApI>(`todo-lists/${todolistId}/tasks/${taskId}`);
     return promise;
   },
 
   createTask(todolistId: string, title: string) {
-    const promise = instance.post<ResponseTypeApI<{ item: Task }>>(
-      `todo-lists/${todolistId}/tasks`,
-      {
-        title,
-      }
-    );
+    const promise = instance.post<ResponseTypeApI<{ item: Task }>>(`todo-lists/${todolistId}/tasks`, {
+      title,
+    });
     return promise;
   },
 
   updateTask(todolistId: string, taskId: string, objects: PutTypeTask) {
     const promise = instance.put<ResponseTypeApI<{ item: PutTypeTask }>>(
       `todo-lists/${todolistId}/tasks/${taskId}`,
-      objects
+      objects,
     );
     return promise;
   },
 
-  reorderTasks(
-    todolistId: string,
-    taskId: string,
-    putAfterItemId: string | null
-  ) {
-    return instance.put<ResponseTypeApI>(
-      `/todo-lists/${todolistId}/tasks/${taskId}/reorder`,
-      {
-        putAfterItemId,
-      }
-    );
+  reorderTasks(todolistId: string, taskId: string, putAfterItemId: string | null) {
+    return instance.put<ResponseTypeApI>(`/todo-lists/${todolistId}/tasks/${taskId}/reorder`, {
+      putAfterItemId,
+    });
   },
 };
 
@@ -199,8 +177,6 @@ const instance2 = axios.create({
 
 export const captchaAPI = {
   getCaptchUser() {
-    return instance2.put(
-      `security/get-captcha-url`
-    );
+    return instance2.put(`security/get-captcha-url`);
   },
 };

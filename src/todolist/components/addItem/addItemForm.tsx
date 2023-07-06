@@ -5,12 +5,11 @@ import { useAddItemForm } from "../../../customHook/useaAddItemForm";
 
 type AddItemFormProps = {
   newAdd: (value: string) => void;
-  dis?:boolean
+  dis?: boolean;
 };
 
 export const AddItemForm = memo((props: AddItemFormProps) => {
-  const { valueInput, error, funAddValueInput, funKeyHundler, NewTaskAdd } =
-    useAddItemForm(props.newAdd);
+  const { valueInput, error, funAddValueInput, funKeyHundler, NewTaskAdd } = useAddItemForm(props.newAdd);
 
   return (
     <div>
@@ -24,7 +23,7 @@ export const AddItemForm = memo((props: AddItemFormProps) => {
         style={{ margin: "10px" }}
       />
       <Button
-        disabled = {props.dis}
+        disabled={props.dis}
         variant="contained"
         color="primary"
         size="small"

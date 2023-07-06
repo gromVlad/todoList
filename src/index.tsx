@@ -7,11 +7,9 @@ import { Provider } from "react-redux";
 import { store } from "./redusers/state";
 import { BrowserRouter, HashRouter } from "react-router-dom";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-    <Provider store={store}>
-      <App />
-    </Provider>
+  <Provider store={store}>
+    <App />
+  </Provider>,
 );

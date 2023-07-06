@@ -1,6 +1,5 @@
 import { InitialStateType, appReducerStatus, changeTackAppErrorAC, changeTackAppStatusAC } from "./app-reducer";
 
-
 describe("appReducerStatus", () => {
   let initialState: InitialStateType;
 
@@ -27,5 +26,4 @@ describe("appReducerStatus", () => {
 
     expect(newState.error).toBe(error);
   });
-
 });

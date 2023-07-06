@@ -1,44 +1,32 @@
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { log } from "console";
+
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 
-const initialState = {
-  status: "idle" as RequestStatusType,
-  error: null as null | string,
+interface AppState {
+  status: RequestStatusType;
+  error: string | null;
+}
+
+const initialState: AppState = {
+  status: "idle",
+  error: null,
 };
 
-export type InitialStateType = typeof initialState;
+export const appSlice = createSlice({
+  name: "app",
+  initialState,
+  reducers: {
+    changeTackAppStatusAC: (state, action: PayloadAction<{status: RequestStatusType}>) => {
+      console.log(current(state))
+      state.status = action.payload.status;
+    },
+    changeTackAppErrorAC: (state, action: PayloadAction<{ error: string | null}>) => {
+      state.error = action.payload.error;
+    },
+  },
+});
 
-export const appReducerStatus = (
-  state: InitialStateType = initialState,
-  action: ActionsAppReducerStatusType
-): InitialStateType => {
-  switch (action.type) {
-    case "APP/SET-STATUS":
-      return { ...state, status: action.status };
-    case "APP/SET-ERROR":
-      return { ...state, error: action.error };
-    default:
-      return state;
-  }
-};
+export const ActionsAppReducer = appSlice.actions;
 
-export const changeTackAppStatusAC = (status: RequestStatusType) => {
-  return {
-    type: "APP/SET-STATUS",
-    status,
-  } as const;
-};
-
-export const changeTackAppErrorAC = (error: null | string) => {
-  return {
-    type: "APP/SET-ERROR",
-    error,
-  } as const;
-};
-
-type ChangeTackAppStatusType = ReturnType<typeof changeTackAppStatusAC>;
-type ChangeTackAppErrorType = ReturnType<typeof changeTackAppErrorAC>;
-
-
-export type ActionsAppReducerStatusType =
-  | ChangeTackAppStatusType
-  | ChangeTackAppErrorType;
+export const appReducerStatus = appSlice.reducer;

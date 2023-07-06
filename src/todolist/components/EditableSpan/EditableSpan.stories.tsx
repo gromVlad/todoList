@@ -24,4 +24,3 @@ export const EditableSpanStory: Story = {
     changeSpan: action("Value EditableSpan changed"),
   },
 };
-

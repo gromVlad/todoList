@@ -1,9 +1,5 @@
 import { TaskType, userReducerTask } from "./reduser_tasks";
-import {
-  AddTodoTypeAC,
-  TodolistsTypes,
-  userReducerTodolist,
-} from "./reduser_todolist";
+import { AddTodoTypeAC, TodolistsTypes, userReducerTodolist } from "./reduser_todolist";
 
 // Check if ids are equal
 test("ids should be equals", () => {

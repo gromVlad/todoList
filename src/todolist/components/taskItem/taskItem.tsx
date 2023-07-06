@@ -3,10 +3,7 @@ import style from "./taskItem.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
-import {
-  useStyledTaskItem,
-  useTaskItem,
-} from "../../../customHook/useTaskItem";
+import { useStyledTaskItem, useTaskItem } from "../../../customHook/useTaskItem";
 import { Task, TaskStatusType } from "../../../api/todolistApi";
 import { useDispatchWithType } from "../../../redusers/ActionThunkDispatchType";
 import { reorderTaskInListTC } from "../../../redusers/reduser_tasks";
@@ -27,7 +24,7 @@ export const TaskItem = memo((props: TaskItemType) => {
     props.changeChekBox,
     props.changeTaskTitle,
     props.id,
-    props.element
+    props.element,
   );
   const dispatch = useDispatchWithType();
 
@@ -68,11 +65,7 @@ export const TaskItem = memo((props: TaskItemType) => {
       onDrop={handleDrop}
       key={props.element.id}
       id={props.element.id}
-      className={
-        props.element.status === TaskStatusType.Completed
-          ? style["is-done"]
-          : ""
-      }
+      className={props.element.status === TaskStatusType.Completed ? style["is-done"] : ""}
     >
       <Checkbox
         checked={props.element.status === TaskStatusType.Completed}
@@ -81,12 +74,7 @@ export const TaskItem = memo((props: TaskItemType) => {
         style={{ verticalAlign: "top" }}
       />
       <EditableSpan title={props.element.title} changeSpan={changeSpan} />
-      <StyledButton
-        variant="contained"
-        onClick={funRemoveTask}
-        disabled={props.dis}
-        style={{ verticalAlign: "top" }}
-      >
+      <StyledButton variant="contained" onClick={funRemoveTask} disabled={props.dis} style={{ verticalAlign: "top" }}>
         <DeleteIcon />
       </StyledButton>
     </div>

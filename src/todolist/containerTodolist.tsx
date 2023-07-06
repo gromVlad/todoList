@@ -8,17 +8,10 @@ import { RequestStatusType } from "../redusers/app-reducer";
 import { Navigate } from "react-router";
 import { useSelectorWithType } from "../redusers/ActionThunkDispatchType";
 
-
-
 export const ContainerTodolist = () => {
+  const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.appStatus.status);
 
-  const status = useSelector<AppRootStateType, RequestStatusType>(
-    (state) => state.appStatus.status
-  );
-
-  const isLogin = useSelectorWithType<boolean>(
-    (state) => state.login.isLoggedIn
-  );
+  const isLogin = useSelectorWithType<boolean>((state) => state.login.isLoggedIn);
 
   const {
     todolists,
@@ -39,34 +32,31 @@ export const ContainerTodolist = () => {
 
   return (
     <>
-      <Grid
-          container
-          style={{ margin: "10px", borderBottom: "2px solid black" }}
-        >
-          <h2>Add Todolist</h2>
-          <AddItemForm newAdd={addTodolist} dis={status === "loading"} />
-        </Grid>
-        <Grid container spacing={8}>
-          {todolists.map((todo) => {
-            return (
-              <Grid item key={todo.id}>
-                <Paper >
-                  <Todolist
-                    todo={todo}
-                    taskTodo={tasks[todo.id]}
-                    removetask={removetask}
-                    changeFilter={changeFilter}
-                    newAddTask={newAddTask}
-                    changeChekBox={changeChekBox}
-                    deleteTodolist={deleteTodolist}
-                    changeTaskTitle={changeTaskTitle}
-                    changeTodoTitle={changeTodoTitle}
-                  />
-                </Paper>
-              </Grid>
-            );
-          })}
-        </Grid>
+      <Grid container style={{ margin: "10px", borderBottom: "2px solid black" }}>
+        <h2>Add Todolist</h2>
+        <AddItemForm newAdd={addTodolist} dis={status === "loading"} />
+      </Grid>
+      <Grid container spacing={8}>
+        {todolists.map((todo) => {
+          return (
+            <Grid item key={todo.id}>
+              <Paper>
+                <Todolist
+                  todo={todo}
+                  taskTodo={tasks[todo.id]}
+                  removetask={removetask}
+                  changeFilter={changeFilter}
+                  newAddTask={newAddTask}
+                  changeChekBox={changeChekBox}
+                  deleteTodolist={deleteTodolist}
+                  changeTaskTitle={changeTaskTitle}
+                  changeTodoTitle={changeTodoTitle}
+                />
+              </Paper>
+            </Grid>
+          );
+        })}
+      </Grid>
     </>
-  )
-}
+  );
+};

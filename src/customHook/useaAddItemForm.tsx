@@ -36,6 +36,6 @@ export const useAddItemForm = (newAdd: (value: string) => void) => {
     error,
     funAddValueInput,
     funKeyHundler,
-    NewTaskAdd
+    NewTaskAdd,
   };
-}
+};

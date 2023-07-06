@@ -22,6 +22,6 @@ export const TaskIsNotDoneStory: Story = {};
 
 export const TaskIsDoneStory: Story = {
   args: {
-     element: { id: "12wsdewfijdei2343", title: "CSS", isDone: true },
+    element: { id: "12wsdewfijdei2343", title: "CSS", isDone: true },
   },
 };
