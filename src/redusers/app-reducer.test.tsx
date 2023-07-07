@@ -1,7 +1,8 @@
-import { InitialStateType, appReducerStatus, changeTackAppErrorAC, changeTackAppStatusAC } from "./app-reducer";
+import { ActionsAppReducer, AppState, appReducerStatus} from "./app-reducer";
+
 
 describe("appReducerStatus", () => {
-  let initialState: InitialStateType;
+  let initialState: AppState;
 
   beforeEach(() => {
     initialState = {
@@ -11,7 +12,7 @@ describe("appReducerStatus", () => {
   });
 
   test("should change the status", () => {
-    const action = changeTackAppStatusAC("loading");
+    const action = ActionsAppReducer.changeTackAppStatusAC({status: "loading"});
 
     const newState = appReducerStatus(initialState, action);
 
@@ -20,7 +21,7 @@ describe("appReducerStatus", () => {
 
   test("should change the error", () => {
     const error = "An error occurred";
-    const action = changeTackAppErrorAC(error);
+    const action = ActionsAppReducer.changeTackAppErrorAC({error:error});
 
     const newState = appReducerStatus(initialState, action);
 

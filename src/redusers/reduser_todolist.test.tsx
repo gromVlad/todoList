@@ -1,98 +1,200 @@
-import {
-  AddTodoTypeAC,
-  ChangeEntityStatusTodoTitleAC,
-  ChangeTodoFilterAC,
-  ChangeTodoTitleAC,
-  RemoveTodolistAC,
-  TodolistsTypes,
-  setTodolistsAC,
-  userReducerTodolist,
-} from "./reduser_todolist";
+import { TodolistType } from "api/todolistApi";
+import { TodoListTypeState, todoListSlice } from "./reduser_todolist";
 
-describe("userReducerTodolist reducer", () => {
-  let state: TodolistsTypes[] = [];
+
+describe("todoListSlice reducer", () => {
+  let initialState: TodoListTypeState[];
 
   beforeEach(() => {
-    state = [
+    initialState = [];
+  });
+
+  test("should handle addTodoList", () => {
+    const todoList: TodolistType = {
+      id: "1",
+      addedDate: "2022-01-01",
+      order: 0,
+      title: "Test TodoList",
+    };
+
+    const newState = todoListSlice.reducer(initialState, todoListSlice.actions.addTodoList(todoList));
+
+    expect(newState).toEqual([{ ...todoList, filter: "all", entityStatus: false }]);
+  });
+
+  test("should handle removeTodoList", () => {
+    const todoList: TodoListTypeState = {
+      id: "1",
+      addedDate: "2022-01-01",
+      order: 0,
+      title: "Test TodoList",
+      filter: "all",
+      entityStatus: false,
+    };
+
+    const state: TodoListTypeState[] = [todoList];
+
+    const newState = todoListSlice.reducer(state, todoListSlice.actions.removeTodoList("1"));
+
+    expect(newState).toEqual([]);
+  });
+
+  test("should handle changeTodoListTitle", () => {
+    const todoList: TodoListTypeState = {
+      id: "1",
+      addedDate: "2022-01-01",
+      order: 0,
+      title: "Test TodoList",
+      filter: "all",
+      entityStatus: false,
+    };
+
+    const state: TodoListTypeState[] = [todoList];
+
+    const newState = todoListSlice.reducer(
+      state,
+      todoListSlice.actions.changeTodoListTitle({ id: "1", title: "Updated Test TodoList" })
+    );
+
+    expect(newState).toEqual([{ ...todoList, title: "Updated Test TodoList" }]);
+  });
+
+  test("should handle changeTodoListFilter", () => {
+    const todoList: TodoListTypeState = {
+      id: "1",
+      addedDate: "2022-01-01",
+      order: 0,
+      title: "Test TodoList",
+      filter: "all",
+      entityStatus: false,
+    };
+
+    const state: TodoListTypeState[] = [todoList];
+
+    const newState = todoListSlice.reducer(
+      state,
+      todoListSlice.actions.changeTodoListFilter({ id: "1", filter: "completed" })
+    );
+
+    expect(newState).toEqual([{ ...todoList, filter:"completed" }]);
+  });
+
+  test("should handle changeEntityStatusTodoTitle", () => {
+    const todoList: TodoListTypeState = {
+      id: "1",
+      addedDate: "2022-01-01",
+      order: 0,
+      title: "Test TodoList",
+      filter: "all",
+      entityStatus: false,
+    };
+
+    const state: TodoListTypeState[] = [todoList];
+
+    const newState = todoListSlice.reducer(
+      state,
+      todoListSlice.actions.changeEntityStatusTodoTitle({ id: "1", entityStatus: true })
+    );
+
+    expect(newState).toEqual([{ ...todoList, entityStatus: true }]);
+  });
+
+  test("should handle setTodoLists", () => {
+    const todoLists: TodolistType[] = [
       {
         id: "1",
         addedDate: "2022-01-01",
         order: 0,
-        title: "Todo 1",
+        title: "Test TodoList 1",
+      },
+      {
+        id: "2",
+        addedDate: "2022-02-01",
+        order: 1,
+        title: "Test TodoList 2",
+      },
+    ];
+
+    const newState = todoListSlice.reducer(initialState, todoListSlice.actions.setTodoLists(todoLists));
+
+    expect(newState).toEqual([
+      { ...todoLists[0], filter: "all", entityStatus: false },
+      { ...todoLists[1], filter: "all", entityStatus: false },
+    ]);
+  });
+
+  test("should handle reorderTodoLists when putAfterItemId is null", () => {
+    const todoLists: TodoListTypeState[] = [
+      {
+        id: "1",
+        addedDate: "2022-01-01",
+        order: 0,
+        title: "Test TodoList 1",
         filter: "all",
         entityStatus: false,
       },
       {
         id: "2",
-        addedDate: "2022-01-01",
+        addedDate: "2022-02-01",
         order: 1,
-        title: "Todo 2",
+        title: "Test TodoList 2",
         filter: "all",
         entityStatus: false,
       },
     ];
+
+    const state: TodoListTypeState[] = [...todoLists];
+
+    const newState = todoListSlice.reducer(
+      state,
+      todoListSlice.actions.reorderTodoLists({ todoListId: "2", putAfterItemId: null })
+    );
+
+    expect(newState).toEqual([
+      { ...todoLists[1], filter: "all", entityStatus: false },
+      { ...todoLists[0], filter: "all", entityStatus: false },
+    ]);
   });
 
-  it("should handle REMOVE-TODOLIST", () => {
-    const action = RemoveTodolistAC("1");
-    const newState = userReducerTodolist(state, action);
-    expect(newState.length).toBe(1);
-    expect(newState[0].id).toBe("2");
-  });
-
-  it("should handle ADD-TODOLIST", () => {
-    const newTodo = {
-      id: "3",
-      addedDate: "2022-01-01",
-      order: 2,
-      title: "Todo 3",
-    };
-    const action = AddTodoTypeAC(newTodo);
-    const newState = userReducerTodolist(state, action);
-    expect(newState.length).toBe(3);
-    expect(newState[0].id).toBe("3");
-    expect(newState[0].title).toBe("Todo 3");
-  });
-
-  it("should handle CHANGE-TODOLIST-TITLE", () => {
-    const action = ChangeTodoTitleAC("1", "New Title");
-    const newState = userReducerTodolist(state, action);
-    expect(newState[0].title).toBe("New Title");
-  });
-
-  it("should handle CHANGE-TODOLIST-FILTER", () => {
-    const action = ChangeTodoFilterAC("1", "completed");
-    const newState = userReducerTodolist(state, action);
-    expect(newState[0].filter).toBe("completed");
-  });
-
-  it("should handle SET-TODOLISTS", () => {
-    const newTodolists = [
-      { id: "3", addedDate: "2022-01-01", order: 2, title: "Todo 3" },
-      { id: "4", addedDate: "2022-01-01", order: 3, title: "Todo 4" },
+  test("should handle reorderTodoLists when putAfterItemId is not null", () => {
+    const todoLists: TodoListTypeState[] = [
+      {
+        id: "1",
+        addedDate: "2022-01-01",
+        order: 0,
+        title: "Test TodoList 1",
+        filter: "all",
+        entityStatus: false,
+      },
+      {
+        id: "2",
+        addedDate: "2022-02-01",
+        order: 1,
+        title: "Test TodoList 2",
+        filter: "all",
+        entityStatus: false,
+      },
+      {
+        id: "3",
+        addedDate: "2022-03-01",
+        order: 2,
+        title: "Test TodoList 3",
+        filter: "all",
+        entityStatus: false,
+      },
     ];
-    const action = setTodolistsAC(newTodolists);
-    const newState = userReducerTodolist(state, action);
-    expect(newState.length).toBe(2);
-    expect(newState[0].id).toBe("3");
-    expect(newState[0].title).toBe("Todo 3");
-    expect(newState[1].id).toBe("4");
-    expect(newState[1].title).toBe("Todo 4");
-  });
 
-  test("should change entityStatus of a todolist", () => {
-    const action = ChangeEntityStatusTodoTitleAC("2", true);
+    const state: TodoListTypeState[] = [...todoLists];
 
-    const newState = userReducerTodolist(state, action);
+    const newState = todoListSlice.reducer(
+      state,
+      todoListSlice.actions.reorderTodoLists({ todoListId: "3", putAfterItemId: "1" })
+    );
 
-    expect(newState[1].entityStatus).toBeTruthy();
-  });
-
-  test("should not change entityStatus of other todolists", () => {
-    const action = ChangeEntityStatusTodoTitleAC("2", true);
-
-    const newState = userReducerTodolist(state, action);
-
-    expect(newState[0].entityStatus).toBeFalsy();
+    expect(newState).toEqual([
+      { ...todoLists[0], filter: "all", entityStatus: false },
+      { ...todoLists[2], filter: "all", entityStatus: false },
+      { ...todoLists[1], filter: "all", entityStatus: false },
+    ]);
   });
 });

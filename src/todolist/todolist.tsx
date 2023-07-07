@@ -40,19 +40,25 @@ export const Todolist = memo((props: todolistType) => {
   );
 
   const { StyledButton, AllButton, CompletedButton, ActiveButton } = useStyledComponentTodolist();
+  
 
   let [currentTask, setCurrentTask] = useState<string>('')
+  let [pointer, setPointer] = useState<boolean>(false);
 
   const handleDragStart = (event: any, currentTask: Task) => {
     setCurrentTask(currentTask.id)
+    event.stopPropagation()
+    setPointer(true);
   };
 
   const handleDragOver = (event: any) => {
     event.preventDefault();
+    
   };
 
   const handleDragEnd = (event: any) => {
     event.target.style.background = 'white'
+    setPointer(false);
   };
 
   const handleDragEnter = (event: any) => {
@@ -66,6 +72,7 @@ export const Todolist = memo((props: todolistType) => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>, targetTask: Task) => {
     dispatch(reorderTaskInListTC(props.todo.id, currentTask, targetTask.id));
+    event.stopPropagation()
   };
 
   return (
@@ -100,7 +107,9 @@ export const Todolist = memo((props: todolistType) => {
                   id={props.todo.id}
                   element={element}
                   dis={entityStatus === "loading"}
+                  pointer={pointer}
                 />
+                
               </div>
             );
           })}

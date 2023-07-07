@@ -57,8 +57,6 @@ export const taskSlice = createSlice({
 
       todoList[sourceIndex] = todoList[targetIndex];
       todoList[targetIndex] = task;
-
-      return state;
     },
   },
   extraReducers: (builder) => {
@@ -180,7 +178,7 @@ export const reorderTaskInListTC =
       .reorderTasks(idTodoList, sourceTaskId, targetTaskId)
       .then((res) => {
         if (res.data.resultCode === ResultCode.OK) {
-          //dispatch(fetchTodos())
+          dispatch(fetchTodos())
           dispatch(alluserReducertask.reorderTaskInList({ idTodoList, sourceTaskId, targetTaskId }));
         } else {
           handleServerAppError(res.data, dispatch);

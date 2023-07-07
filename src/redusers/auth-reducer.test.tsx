@@ -1,33 +1,27 @@
-import {
-  initialState,
-  authReducer,
-  setIsLoggedInAC,
-  setIsInitInAC,
-  getCaptchCreator,
-  nullCaptchCreator,
-} from "./auth-reducer";
+import { allActionsauthReducer, authReducer, initialState } from "./auth-reducer";
 
-describe("authReducer", () => {
-  it("should set isLoggedIn to true", () => {
-    const action = setIsLoggedInAC(true);
+
+describe('auth slice tests', () => {
+  it('should handle setIsLoggedInAC', () => {
+    const action = allActionsauthReducer.setIsLoggedInAC({ isLoggedIn: true });
     const newState = authReducer(initialState, action);
     expect(newState.isLoggedIn).toBe(true);
   });
 
-  it("should set isInit to true", () => {
-    const action = setIsInitInAC(true);
+  it('should handle setIsInitInAC', () => {
+    const action = allActionsauthReducer.setIsInitInAC({ isInit: true });
     const newState = authReducer(initialState, action);
     expect(newState.isInit).toBe(true);
   });
 
-  it("should set urlCaptch to the provided value", () => {
-    const action = getCaptchCreator("https://example.com/captcha.jpg");
+  it('should handle getCaptchCreator', () => {
+    const action = allActionsauthReducer.getCaptchCreator({ urlCaptch: 'sample url' });
     const newState = authReducer(initialState, action);
-    expect(newState.urlCaptch).toBe("https://example.com/captcha.jpg");
+    expect(newState.urlCaptch).toBe('sample url');
   });
 
-  it("should set urlCaptch to null", () => {
-    const action = nullCaptchCreator();
+  it('should handle nullCaptchCreator', () => {
+    const action = allActionsauthReducer.nullCaptchCreator();
     const newState = authReducer(initialState, action);
     expect(newState.urlCaptch).toBe(null);
   });

@@ -1,0 +1,38 @@
+.customArrow {
+  width: 0; 
+  height: 0;  
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;  
+  border-left: 20px solid black;
+  margin: 20px;
+  display: inline-block;
+}
+
+.custom-arrow {
+  animation: slide 0.3s ease-out;
+}
+
+@keyframes slide {
+  from {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.paper-dragover {
+  animation: scale 0.3s ease-out;
+  transform: scale(1.05);
+}
+
+@keyframes scale {
+  from {
+    transform: scale(1); 
+  }
+  to {
+    transform: scale(1.1); 
+  }
+}

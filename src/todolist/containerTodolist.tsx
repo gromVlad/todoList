@@ -9,6 +9,7 @@ import { Navigate } from "react-router";
 import { useDispatchWithType, useSelectorWithType } from "../redusers/ActionThunkDispatchType";
 import { useState } from "react";
 import { TodoListTypeState, reorderTodolistTC } from "redusers/reduser_todolist";
+import style from "./containerTodolist.module.css";
 
 export const ContainerTodolist = () => {
   const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.appStatus.status);
@@ -30,33 +31,34 @@ export const ContainerTodolist = () => {
     deleteTodolist,
   } = useAppWithRedux();
 
-
-  let [currentList, setCurrentList] = useState<string>('')
+  let [currentList, setCurrentList] = useState<string>("");
+  let [pointer, setPointer] = useState<boolean>(false);
 
   if (!isLogin) {
     return <Navigate to={"/Login"} />;
   }
 
-
   const handleDragStart = (event: any, currentList: TodoListTypeState) => {
-    setCurrentList(currentList.id)
+    setCurrentList(currentList.id);
+    setPointer(true);
   };
 
   const handleDragOver = (event: any) => {
     event.preventDefault();
+    event.target.parentNode.classList.add(style.paperDragover);
   };
 
   const handleDragEnd = (event: any) => {
-    event.target.style.background = 'white'
+    event.target.style.background = "white";
+    setPointer(false);
   };
 
   const handleDragEnter = (event: any) => {
     event.preventDefault();
-    event.target.classList.add("dragged-over");
   };
 
   const handleDragLeave = (event: any) => {
-    event.target.classList.remove("dragged-over");
+    event.target.parentNode.classList.remove(style.paperDragover);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>, targetTodo: TodoListTypeState) => {
@@ -80,7 +82,8 @@ export const ContainerTodolist = () => {
                 onDragOver={(e) => handleDragOver(e)}
                 onDragEnter={(e) => handleDragEnter(e)}
                 onDragLeave={(e) => handleDragLeave(e)}
-                onDrop={(e) => handleDrop(e, todo)} >
+                onDrop={(e) => handleDrop(e, todo)}
+              >
                 <Todolist
                   todo={todo}
                   taskTodo={tasks[todo.id]}
@@ -92,6 +95,11 @@ export const ContainerTodolist = () => {
                   changeTaskTitle={changeTaskTitle}
                   changeTodoTitle={changeTodoTitle}
                 />
+                {pointer && (
+                  <>
+                    <div className={style.customArrow}></div>
+                  </>
+                )}
               </Paper>
             </Grid>
           );

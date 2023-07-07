@@ -3,7 +3,7 @@ import { log } from "console";
 
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 
-interface AppState {
+export interface AppState {
   status: RequestStatusType;
   error: string | null;
 }

@@ -5,6 +5,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
 import { useStyledTaskItem, useTaskItem } from "../../../customHook/useTaskItem";
 import { Task, TaskStatusType } from "../../../api/todolistApi";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type TaskItemType = {
   removetask: (id: string, idtodo: string) => void;
@@ -13,6 +14,7 @@ type TaskItemType = {
   id: string;
   element: Task;
   dis: boolean;
+  pointer:boolean
 };
 
 export const TaskItem = memo((props: TaskItemType) => {
@@ -41,6 +43,9 @@ export const TaskItem = memo((props: TaskItemType) => {
       <StyledButton variant="contained" onClick={funRemoveTask} disabled={props.dis} style={{ verticalAlign: "top" }}>
         <DeleteIcon />
       </StyledButton>
+      {props.pointer && (
+          <KeyboardArrowDownIcon className={style.arrowIcon} />
+      )}
     </div>
   );
 });
