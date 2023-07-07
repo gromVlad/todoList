@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import { ActionTypeTasK, userReducerTask } from "./reduser_tasks";
-import { ActionType, userReducerTodolist } from "./reduser_todolist";
+import { userReducerTask } from "./reduser_tasks";
+import { userReducerTodolist } from "./reduser_todolist";
 import { appReducerStatus } from "./app-reducer";
 import { authReducer } from "./auth-reducer";
 import { configureStore } from "@reduxjs/toolkit";
@@ -21,9 +21,6 @@ export const store = configureStore({
 
 // определить автоматически тип всего объекта состояния
 export type AppRootStateType = ReturnType<typeof rootReducer>;
-
-//вся типизация actions
-export type AllActionsType = ActionType | ActionTypeTasK 
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
 // @ts-ignore

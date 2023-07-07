@@ -4,6 +4,7 @@ import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
 import { allActionsTodolist } from "./reduser_todolist";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppThunk } from "./ActionThunkDispatchType";
+import { actionsTodoandTaskClear } from "./actionsTodoandTask";
 
 
 export const initialState = {
@@ -81,7 +82,7 @@ export const logoutTC = (): AppThunk => (dispatch) => {
       if (res.data.resultCode === 0) {
         dispatch(allActionsauthReducer.setIsLoggedInAC({ isLoggedIn: false }));
         dispatch(ActionsAppReducer.changeTackAppStatusAC({status: "succeeded"}));
-        dispatch(allActionsTodolist.clearAllData());
+        dispatch(actionsTodoandTaskClear({task:{}, todoList:[]}));
       } else {
         handleServerAppError(res.data, dispatch);
       }
