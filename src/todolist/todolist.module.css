@@ -17,5 +17,9 @@
 .card {
   border-bottom: 2px solid black;
   margin: 10px;
-  cursor: grab;
+  cursor: pointer;
+}
+
+.card[draggable] {
+  cursor: pointer;
 }

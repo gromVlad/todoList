@@ -18,7 +18,6 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     changeTackAppStatusAC: (state, action: PayloadAction<{status: RequestStatusType}>) => {
-      console.log(current(state))
       state.status = action.payload.status;
     },
     changeTackAppErrorAC: (state, action: PayloadAction<{ error: string | null}>) => {

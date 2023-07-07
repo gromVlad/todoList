@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useState } from "react";
 import style from "./todolist.module.css";
 import { AddItemForm } from "./components/addItem/addItemForm";
 import { EditableSpan } from "./components/EditableSpan/EditableSpan";
@@ -11,6 +11,7 @@ import { RequestStatusType } from "../redusers/app-reducer";
 import { AppRootStateType } from "../redusers/state";
 import { useSelector } from "react-redux";
 import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
+import { reorderTaskInListTC } from "redusers/reduser_tasks";
 
 type todolistType = {
   todo: TodoListTypeState;
@@ -26,7 +27,6 @@ type todolistType = {
 
 export const Todolist = memo((props: todolistType) => {
   const entityStatus = useSelector<AppRootStateType, RequestStatusType>((state) => state.appStatus.status);
-
   const dispatch = useDispatchWithType();
 
   const { task, changeValueButton, funRemoveTodolist, newAddtaskOnValue, changeTodoTitleRet } = useTodoList(
@@ -41,12 +41,18 @@ export const Todolist = memo((props: todolistType) => {
 
   const { StyledButton, AllButton, CompletedButton, ActiveButton } = useStyledComponentTodolist();
 
-  const handleDragStart = (event: any) => {
-    event.dataTransfer.setData("text/plain", props.todo.id);
+  let [currentTask, setCurrentTask] = useState<string>('')
+
+  const handleDragStart = (event: any, currentTask: Task) => {
+    setCurrentTask(currentTask.id)
   };
 
   const handleDragOver = (event: any) => {
     event.preventDefault();
+  };
+
+  const handleDragEnd = (event: any) => {
+    event.target.style.background = 'white'
   };
 
   const handleDragEnter = (event: any) => {
@@ -58,22 +64,13 @@ export const Todolist = memo((props: todolistType) => {
     event.target.classList.remove("dragged-over");
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const sourceTodoId = event.dataTransfer.getData("text/plain");
-    const targetTodoId = props.todo.id;
-    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId));
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>, targetTask: Task) => {
+    dispatch(reorderTaskInListTC(props.todo.id, currentTask, targetTask.id));
   };
 
   return (
     <div
       className={style.card}
-      draggable
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
     >
       <div>
         <EditableSpan title={props.todo.title} changeSpan={changeTodoTitleRet} />
@@ -86,15 +83,25 @@ export const Todolist = memo((props: todolistType) => {
         <div>
           {task.map((element) => {
             return (
-              <TaskItem
-                removetask={props.removetask}
-                changeChekBox={props.changeChekBox}
-                changeTaskTitle={props.changeTaskTitle}
-                id={props.todo.id}
-                element={element}
+              <div
+                draggable
+                onDragStart={(e) => handleDragStart(e, element)}
+                onDragEnd={(e) => handleDragEnd(e)}
+                onDragOver={(e) => handleDragOver(e)}
+                onDragEnter={(e) => handleDragEnter(e)}
+                onDragLeave={(e) => handleDragLeave(e)}
+                onDrop={(e) => handleDrop(e, element)}
                 key={element.id}
-                dis={entityStatus === "loading"}
-              />
+              >
+                <TaskItem
+                  removetask={props.removetask}
+                  changeChekBox={props.changeChekBox}
+                  changeTaskTitle={props.changeTaskTitle}
+                  id={props.todo.id}
+                  element={element}
+                  dis={entityStatus === "loading"}
+                />
+              </div>
             );
           })}
         </div>
