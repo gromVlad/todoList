@@ -39,7 +39,7 @@ export const useAppWithRedux = () => {
   //fun change chekbox
   const changeChekBox = useCallback(
     (id: string, status: TaskStatusType, idTodo: string) => {
-      dispatch(updateTask(id, idTodo, { status }));
+      dispatch(updateTask({ taskId: id, todolistId: idTodo, mod: {status}} ));
     },
     [dispatch],
   );
@@ -47,7 +47,7 @@ export const useAppWithRedux = () => {
   //change task title
   const changeTaskTitle = useCallback(
     (id: string, title: string, idTodo: string) => {
-      dispatch(updateTask(id, idTodo, { title }));
+      dispatch(updateTask({ taskId: id, todolistId: idTodo, mod: { title } }));
     },
     [dispatch],
   );

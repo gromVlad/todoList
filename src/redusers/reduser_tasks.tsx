@@ -1,9 +1,7 @@
 import { Task, TaskStatusType, todolistAPI } from "../api/todolistApi";
-import { Dispatch } from "redux";
-import { AppRootStateType } from "./state";
 import { ActionsAppReducer } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
-import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { allActionsTodolist, fetchTodos, ResultCode } from "./reduser_todolist";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
 import { createAppAsyncThunk } from "./withAsyncThunk";
@@ -18,14 +16,6 @@ export const taskSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    changeTask: (state, action: PayloadAction<{ id: string; mod: PutTypeTask; idTodo: string }>) => {
-      const { id, mod, idTodo } = action.payload;
-      const tasks = state[idTodo];
-      const task = tasks.find((t) => t.id === id);
-      if (task) {
-        Object.assign(task, mod);
-      }
-    },
     reorderTaskInList: (
       state,
       action: PayloadAction<{ idTodoList: string; sourceTaskId: string; targetTaskId: string }>,
@@ -61,6 +51,14 @@ export const taskSlice = createSlice({
         }
         state[task.todoListId].unshift(task);
       })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const { id, mod, idTodo } = action.payload;
+        const tasks = state[idTodo];
+        const task = tasks.find((t) => t.id === id);
+        if (task) {
+          Object.assign(task, mod);
+        }
+      })
       .addCase(allActionsTodolist.addTodoList, (state, action) => {
         state[action.payload.id] = [];
       })
@@ -81,85 +79,68 @@ export const taskSlice = createSlice({
 //____Thunk____//
 
 //fetchTasksThunk
-const fetchTasksThunk = createAppAsyncThunk<
-  { tasks: Task[], todolistId: string },
-  string
->("tasks/fetchTasks", async (todolistId, thunkAPI) => {
-  const { dispatch, rejectWithValue } = thunkAPI;
-  try {
-    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-    const res = await todolistAPI.getTask(todolistId);
-    const tasks = res.data.items;
-    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-    return { tasks, todolistId };
-  } catch (error) {
-    handleServerNetworkError(error, dispatch);
-    return rejectWithValue(null);
-  }
-});
+const fetchTasksThunk = createAppAsyncThunk<{ tasks: Task[]; todolistId: string }, string>(
+  "tasks/fetchTasks",
+  async (todolistId, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    try {
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+      const res = await todolistAPI.getTask(todolistId);
+      const tasks = res.data.items;
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+      return { tasks, todolistId };
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
+      return rejectWithValue(null);
+    }
+  },
+);
 
 //removeTasksThunk
-export const removeTasksThunk = createAppAsyncThunk<
-  { id: string, idTodo: string },
-  { id: string, idTodo: string }
-  >("tasks/removeTasksThunK", async ({id, idTodo}, thunkAPI) => {
-  const { dispatch, rejectWithValue } = thunkAPI;
-  try {
-    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-    const res = await todolistAPI.deleteTask(idTodo, id)
-    if (res.data.resultCode === ResultCode.OK) {
-      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-      return { id, idTodo };
-    } else {
-      handleServerAppError(res.data, dispatch);
+export const removeTasksThunk = createAppAsyncThunk<{ id: string; idTodo: string }, { id: string; idTodo: string }>(
+  "tasks/removeTasksThunK",
+  async ({ id, idTodo }, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    try {
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+      const res = await todolistAPI.deleteTask(idTodo, id);
+      if (res.data.resultCode === ResultCode.OK) {
+        dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+        return { id, idTodo };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
       return rejectWithValue(null);
     }
-  } catch (error) {
-    handleServerNetworkError(error, dispatch);
-    return rejectWithValue(null);
-  }
-});
+  },
+);
 
 //addNewTasksThunk
-// export const addNewTasksThunk = (title: string, todolistId: string) => (dispatch: Dispatch) => {
-//   dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-//   todolistAPI
-//     .createTask(todolistId, title)
-//     .then((res) => {
-//       if (res.data.resultCode === ResultCode.OK) {
-//         dispatch(alluserReducertask.addTask({ task: res.data.data.item }));
-//         dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-//       } else {
-//         handleServerAppError(res.data, dispatch);
-//       }
-//     })
-//     .catch((error) => {
-//       handleServerNetworkError(error, dispatch);
-//     });
-// };
-
-export const addNewTasksThunk = createAppAsyncThunk<
-  { task: Task },
-  { title: string, todolistId: string }
-  >("tasks/addNewTasksThunk", async ({ title, todolistId }, thunkAPI) => {
-  const { dispatch, rejectWithValue } = thunkAPI;
-  try {
-    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-    const res = await todolistAPI.createTask(todolistId, title)
-    if (res.data.resultCode === ResultCode.OK) {
-      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-      return { task: res.data.data.item };
-    } else {
-      handleServerAppError(res.data, dispatch);
+export const addNewTasksThunk = createAppAsyncThunk<{ task: Task }, { title: string; todolistId: string }>(
+  "tasks/addNewTasksThunk",
+  async ({ title, todolistId }, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    try {
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+      const res = await todolistAPI.createTask(todolistId, title);
+      if (res.data.resultCode === ResultCode.OK) {
+        dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+        return { task: res.data.data.item };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
       return rejectWithValue(null);
     }
-  } catch (error) {
-    handleServerNetworkError(error, dispatch);
-    return rejectWithValue(null);
-  }
-});
+  },
+);
 
-
+//updateTask
 type PutTypeTask = {
   title?: string;
   description?: string;
@@ -169,38 +150,50 @@ type PutTypeTask = {
   deadline?: string;
 };
 
-export const updateTask = (taskId: string, todolistId: string, mod: PutTypeTask) => {
-  return (dispatch: Dispatch, getState: () => AppRootStateType) => {
-    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-    const allTasksFromState = getState().tasks;
-    const tasksForCurrentTodolist = allTasksFromState[todolistId];
-    const task = tasksForCurrentTodolist.find((t) => {
-      return t.id === taskId;
-    });
+//updateTask
+export const updateTask = createAppAsyncThunk<
+  { id: string; mod: PutTypeTask; idTodo: string },
+  { taskId: string; todolistId: string; mod: PutTypeTask }
+>("tasks/updateTask", async ({ taskId, todolistId, mod }, thunkAPI) => {
+  const { dispatch, rejectWithValue, getState } = thunkAPI;
 
-    if (task) {
-      todolistAPI
-        .updateTask(todolistId, taskId, {
-          title: task.title,
-          description: task.description,
-          status: task.status,
-          priority: task.priority,
-          startDate: task.startDate,
-          deadline: task.deadline,
-          ...mod,
-        })
-        .then(() => {
-          const action = alluserReducertask.changeTask({ id: taskId, mod, idTodo: todolistId });
-          dispatch(action);
-          dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-        })
-        .catch((error) => {
-          handleServerNetworkError(error, dispatch);
-        });
+  dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+  const allTasksFromState = getState().tasks;
+  const tasksForCurrentTodolist = allTasksFromState[todolistId];
+  const task = tasksForCurrentTodolist.find((t) => {
+    return t.id === taskId;
+  });
+
+  if (task) {
+    try {
+      const res = await todolistAPI.updateTask(todolistId, taskId, {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority,
+        startDate: task.startDate,
+        deadline: task.deadline,
+        ...mod,
+      });
+
+      if (res.data.resultCode === 0) {
+        dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+        return { id: taskId, mod, idTodo: todolistId };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
+      return rejectWithValue(null);
     }
-  };
-};
+  } else {
+    dispatch(ActionsAppReducer.changeTackAppErrorAC({ error: "Task not found" }));
+    return rejectWithValue(null);
+  }
+});
 
+//reorderTaskInListTC
 export const reorderTaskInListTC =
   (idTodoList: string, sourceTaskId: string, targetTaskId: string) => (dispatch: any) => {
     dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
@@ -222,4 +215,4 @@ export const reorderTaskInListTC =
 
 export const alluserReducertask = taskSlice.actions;
 export const userReducerTask = taskSlice.reducer;
-export const tasksThunks = { fetchTasksThunk, removeTasksThunk, addNewTasksThunk };
+export const tasksThunks = { fetchTasksThunk, removeTasksThunk, addNewTasksThunk, updateTask };

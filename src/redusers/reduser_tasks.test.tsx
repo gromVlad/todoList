@@ -23,7 +23,7 @@ describe("taskSlice reducer", () => {
       addedDate: "2022-01-01",
     };
 
-    const newState = taskSlice.reducer(initialState, tasksThunks.addNewTasksThunk.fulfilled({ task }, 'requestId', { task }));
+    const newState = taskSlice.reducer(initialState, tasksThunks.addNewTasksThunk.fulfilled({ task }, 'requestId', { title: "Test Task", todolistId: "1"}));
 
     expect(newState).toEqual({ "1": [task] });
   });
@@ -78,7 +78,7 @@ describe("taskSlice reducer", () => {
       addedDate: "2022-01-01",
     };
 
-    const newState = taskSlice.reducer(state, taskSlice.actions.changeTask({ id: "1", mod: newTask, idTodo: "1" }));
+    const newState = taskSlice.reducer(state, tasksThunks.updateTask.fulfilled({ id: "1", mod: newTask, idTodo: "1" }, 'requestId', { taskId: '1', todolistId: '1', mod: newTask }));
 
     expect(newState).toEqual({ "1": [newTask] });
   });
