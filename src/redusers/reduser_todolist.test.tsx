@@ -1,5 +1,5 @@
 import { TodolistType } from "api/todolistApi";
-import { TodoListTypeState, todoListSlice } from "./reduser_todolist";
+import { TodoListTypeState, todoListSlice, todolistThunks } from "./reduser_todolist";
 
 
 describe("todoListSlice reducer", () => {
@@ -17,7 +17,7 @@ describe("todoListSlice reducer", () => {
       title: "Test TodoList",
     };
 
-    const newState = todoListSlice.reducer(initialState, todoListSlice.actions.addTodoList(todoList));
+    const newState = todoListSlice.reducer(initialState, todolistThunks.addNewTodolistThunk.fulfilled({ todo: todoList }, 'requestId','1'));
 
     expect(newState).toEqual([{ ...todoList, filter: "all", entityStatus: false }]);
   });
@@ -34,7 +34,7 @@ describe("todoListSlice reducer", () => {
 
     const state: TodoListTypeState[] = [todoList];
 
-    const newState = todoListSlice.reducer(state, todoListSlice.actions.removeTodoList("1"));
+    const newState = todoListSlice.reducer(state, todolistThunks.deleteTodolistThunk.fulfilled({ idTodo: "1" }, 'requestId', "Test TodoList"));
 
     expect(newState).toEqual([]);
   });
@@ -53,7 +53,7 @@ describe("todoListSlice reducer", () => {
 
     const newState = todoListSlice.reducer(
       state,
-      todoListSlice.actions.changeTodoListTitle({ id: "1", title: "Updated Test TodoList" })
+      todolistThunks.changeTitleTodolistThunk.fulfilled({ id: "1", title: "Updated Test TodoList" }, 'requestId', { todolistId: "1", title: "Test TodoList" })
     );
 
     expect(newState).toEqual([{ ...todoList, title: "Updated Test TodoList" }]);
@@ -115,7 +115,7 @@ describe("todoListSlice reducer", () => {
       },
     ];
 
-    const newState = todoListSlice.reducer(initialState, todoListSlice.actions.setTodoLists(todoLists));
+    const newState = todoListSlice.reducer(initialState, todolistThunks.fetchTodolistAddThunk.fulfilled({ todo: todoLists }, 'requestId'));
 
     expect(newState).toEqual([
       { ...todoLists[0], filter: "all", entityStatus: false },
@@ -147,7 +147,7 @@ describe("todoListSlice reducer", () => {
 
     const newState = todoListSlice.reducer(
       state,
-      todoListSlice.actions.reorderTodoLists({ todoListId: "2", putAfterItemId: null })
+      todolistThunks.reorderTodolistTC.fulfilled({ todolistId: "2", putAfterItemId: null }, 'requestId', { todolistId: "2", putAfterItemId: null })
     );
 
     expect(newState).toEqual([
@@ -188,7 +188,7 @@ describe("todoListSlice reducer", () => {
 
     const newState = todoListSlice.reducer(
       state,
-      todoListSlice.actions.reorderTodoLists({ todoListId: "3", putAfterItemId: "1" })
+      todolistThunks.reorderTodolistTC.fulfilled({ todolistId: "3", putAfterItemId: "1" }, 'requestId', { todolistId: "3", putAfterItemId: "1" })
     );
 
     expect(newState).toEqual([

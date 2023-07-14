@@ -2,7 +2,7 @@ import { Task, TaskStatusType, todolistAPI } from "../api/todolistApi";
 import { ActionsAppReducer } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { allActionsTodolist, fetchTodos, ResultCode } from "./reduser_todolist";
+import { allActionsTodolist, fetchTodos, ResultCode, todolistThunks } from "./reduser_todolist";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
 import { createAppAsyncThunk } from "./withAsyncThunk";
 
@@ -59,14 +59,14 @@ export const taskSlice = createSlice({
           Object.assign(task, mod);
         }
       })
-      .addCase(allActionsTodolist.addTodoList, (state, action) => {
-        state[action.payload.id] = [];
+      .addCase(todolistThunks.addNewTodolistThunk.fulfilled, (state, action) => {
+        state[action.payload.todo.id] = [];
       })
-      .addCase(allActionsTodolist.removeTodoList, (state, action) => {
-        delete state[action.payload];
+      .addCase(todolistThunks.deleteTodolistThunk.fulfilled, (state, action) => {
+        delete state[action.payload.idTodo];
       })
-      .addCase(allActionsTodolist.setTodoLists, (state, action) => {
-        action.payload.forEach((tl) => {
+      .addCase(todolistThunks.fetchTodolistAddThunk.fulfilled, (state, action) => {
+        action.payload.todo.forEach((tl) => {
           state[tl.id] = [];
         });
       })
@@ -104,7 +104,7 @@ export const removeTasksThunk = createAppAsyncThunk<{ id: string; idTodo: string
     try {
       dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
       const res = await todolistAPI.deleteTask(idTodo, id);
-      if (res.data.resultCode === ResultCode.OK) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
         return { id, idTodo };
       } else {
@@ -126,7 +126,7 @@ export const addNewTasksThunk = createAppAsyncThunk<{ task: Task }, { title: str
     try {
       dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
       const res = await todolistAPI.createTask(todolistId, title);
-      if (res.data.resultCode === ResultCode.OK) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
         return { task: res.data.data.item };
       } else {
@@ -200,7 +200,7 @@ export const reorderTaskInListTC =
     todolistAPI
       .reorderTasks(idTodoList, sourceTaskId, targetTaskId)
       .then((res) => {
-        if (res.data.resultCode === ResultCode.OK) {
+        if (res.data.resultCode === ResultCode.success) {
           setTimeout(() => {
             dispatch(fetchTodos());
           }, 2000);

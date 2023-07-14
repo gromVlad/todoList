@@ -65,7 +65,7 @@ export const useAppWithRedux = () => {
   //change task title
   const changeTodoTitle = useCallback(
     (value: string, idTodo: string) => {
-      dispatch(changeTitleTodolistThunk(idTodo, value));
+      dispatch(changeTitleTodolistThunk({ todolistId: idTodo, title: value }));
     },
     [dispatch],
   );

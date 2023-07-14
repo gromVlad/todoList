@@ -62,7 +62,7 @@ export const ContainerTodolist = () => {
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>, targetTodo: TodoListTypeState) => {
-    dispatch(reorderTodolistTC(currentList, targetTodo.id));
+    dispatch(reorderTodolistTC({ todolistId: currentList, putAfterItemId: targetTodo.id }));
   };
 
   return (
