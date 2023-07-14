@@ -4,10 +4,10 @@ import { ActionsAppReducer } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
 import { AppThunk } from "./ActionThunkDispatchType";
 import { AppRootStateType } from "./state";
-import { fetchTasksThunk } from "./reduser_tasks";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
+import { tasksThunks } from "./reduser_tasks";
 
 export type FitervalueType = "all" | "completed" | "active";
 
@@ -178,5 +178,5 @@ export const changeTitleTodolistThunk = (todolistId: string, title: string) => (
 export const fetchTodos = () => (dispatch: Dispatch<any>, getState: () => AppRootStateType) => {
   dispatch(fetchTodolistAddThunk());
   const todos = getState().todolist;
-  todos.forEach((todo) => dispatch(fetchTasksThunk(todo.id)));
+  todos.forEach((todo) => dispatch(tasksThunks.fetchTasksThunk(todo.id)));
 };

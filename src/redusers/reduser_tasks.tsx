@@ -3,10 +3,10 @@ import { Dispatch } from "redux";
 import { AppRootStateType } from "./state";
 import { ActionsAppReducer } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
-
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { allActionsTodolist, fetchTodos, ResultCode } from "./reduser_todolist";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
+import { createAppAsyncThunk } from "./withAsyncThunk";
 
 export type TaskType = {
   [key: string]: Task[];
@@ -18,19 +18,6 @@ export const taskSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    removeTask: (state, action: PayloadAction<{ id: string; idTodo: string }>) => {
-      return {
-        ...state,
-        [action.payload.idTodo]: state[action.payload.idTodo].filter((el) => el.id !== action.payload.id),
-      };
-    },
-    addTask: (state, action: PayloadAction<{ task: Task }>) => {
-      const { task } = action.payload;
-      if (!state[task.todoListId]) {
-        state[task.todoListId] = [];
-      }
-      state[task.todoListId].unshift(task);
-    },
     changeTask: (state, action: PayloadAction<{ id: string; mod: PutTypeTask; idTodo: string }>) => {
       const { id, mod, idTodo } = action.payload;
       const tasks = state[idTodo];
@@ -38,10 +25,6 @@ export const taskSlice = createSlice({
       if (task) {
         Object.assign(task, mod);
       }
-    },
-    setTasks: (state, action: PayloadAction<{ tasks: Task[]; todolistId: string }>) => {
-      const { tasks, todolistId } = action.payload;
-      state[todolistId] = tasks;
     },
     reorderTaskInList: (
       state,
@@ -61,6 +44,23 @@ export const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchTasksThunk.fulfilled, (state, action) => {
+        const { tasks, todolistId } = action.payload;
+        state[todolistId] = tasks;
+      })
+      .addCase(removeTasksThunk.fulfilled, (state, action) => {
+        return {
+          ...state,
+          [action.payload.idTodo]: state[action.payload.idTodo].filter((el) => el.id !== action.payload.id),
+        };
+      })
+      .addCase(addNewTasksThunk.fulfilled, (state, action) => {
+        const { task } = action.payload;
+        if (!state[task.todoListId]) {
+          state[task.todoListId] = [];
+        }
+        state[task.todoListId].unshift(task);
+      })
       .addCase(allActionsTodolist.addTodoList, (state, action) => {
         state[action.payload.id] = [];
       })
@@ -72,63 +72,93 @@ export const taskSlice = createSlice({
           state[tl.id] = [];
         });
       })
-      .addCase(actionsTodoandTaskClear, (state,action) => {
-        return action.payload.task
+      .addCase(actionsTodoandTaskClear, (state, action) => {
+        return action.payload.task;
       });
   },
 });
 
-export const alluserReducertask = taskSlice.actions;
+//____Thunk____//
 
-export const userReducerTask = taskSlice.reducer;
+//fetchTasksThunk
+const fetchTasksThunk = createAppAsyncThunk<
+  { tasks: Task[], todolistId: string },
+  string
+>("tasks/fetchTasks", async (todolistId, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+    const res = await todolistAPI.getTask(todolistId);
+    const tasks = res.data.items;
+    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+    return { tasks, todolistId };
+  } catch (error) {
+    handleServerNetworkError(error, dispatch);
+    return rejectWithValue(null);
+  }
+});
 
-export const fetchTasksThunk = (todolistId: string) => (dispatch: Dispatch<any>) => {
-  dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-  todolistAPI
-    .getTask(todolistId)
-    .then((res) => {
-      const tasks = res.data.items;
-      dispatch(alluserReducertask.setTasks({ tasks, todolistId }));
+//removeTasksThunk
+export const removeTasksThunk = createAppAsyncThunk<
+  { id: string, idTodo: string },
+  { id: string, idTodo: string }
+  >("tasks/removeTasksThunK", async ({id, idTodo}, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+    const res = await todolistAPI.deleteTask(idTodo, id)
+    if (res.data.resultCode === ResultCode.OK) {
       dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-    })
-    .catch((error) => {
-      handleServerNetworkError(error, dispatch);
-    });
-};
+      return { id, idTodo };
+    } else {
+      handleServerAppError(res.data, dispatch);
+      return rejectWithValue(null);
+    }
+  } catch (error) {
+    handleServerNetworkError(error, dispatch);
+    return rejectWithValue(null);
+  }
+});
 
-export const removeTasksThunk = (id: string, idTodo: string) => (dispatch: Dispatch) => {
-  dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-  todolistAPI
-    .deleteTask(idTodo, id)
-    .then((res) => {
-      if (res.data.resultCode === ResultCode.OK) {
-        dispatch(alluserReducertask.removeTask({ id, idTodo }));
-        dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-      } else {
-        handleServerAppError(res.data, dispatch);
-      }
-    })
-    .catch((error) => {
-      handleServerNetworkError(error, dispatch);
-    });
-};
+//addNewTasksThunk
+// export const addNewTasksThunk = (title: string, todolistId: string) => (dispatch: Dispatch) => {
+//   dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+//   todolistAPI
+//     .createTask(todolistId, title)
+//     .then((res) => {
+//       if (res.data.resultCode === ResultCode.OK) {
+//         dispatch(alluserReducertask.addTask({ task: res.data.data.item }));
+//         dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+//       } else {
+//         handleServerAppError(res.data, dispatch);
+//       }
+//     })
+//     .catch((error) => {
+//       handleServerNetworkError(error, dispatch);
+//     });
+// };
 
-export const addNewTasksThunk = (title: string, todolistId: string) => (dispatch: Dispatch) => {
-  dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
-  todolistAPI
-    .createTask(todolistId, title)
-    .then((res) => {
-      if (res.data.resultCode === ResultCode.OK) {
-        dispatch(alluserReducertask.addTask({ task: res.data.data.item }));
-        dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
-      } else {
-        handleServerAppError(res.data, dispatch);
-      }
-    })
-    .catch((error) => {
-      handleServerNetworkError(error, dispatch);
-    });
-};
+export const addNewTasksThunk = createAppAsyncThunk<
+  { task: Task },
+  { title: string, todolistId: string }
+  >("tasks/addNewTasksThunk", async ({ title, todolistId }, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+    const res = await todolistAPI.createTask(todolistId, title)
+    if (res.data.resultCode === ResultCode.OK) {
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "succeeded" }));
+      return { task: res.data.data.item };
+    } else {
+      handleServerAppError(res.data, dispatch);
+      return rejectWithValue(null);
+    }
+  } catch (error) {
+    handleServerNetworkError(error, dispatch);
+    return rejectWithValue(null);
+  }
+});
+
 
 type PutTypeTask = {
   title?: string;
@@ -178,8 +208,9 @@ export const reorderTaskInListTC =
       .reorderTasks(idTodoList, sourceTaskId, targetTaskId)
       .then((res) => {
         if (res.data.resultCode === ResultCode.OK) {
-          dispatch(fetchTodos())
-          dispatch(alluserReducertask.reorderTaskInList({ idTodoList, sourceTaskId, targetTaskId }));
+          setTimeout(() => {
+            dispatch(fetchTodos());
+          }, 2000);
         } else {
           handleServerAppError(res.data, dispatch);
         }
@@ -188,3 +219,7 @@ export const reorderTaskInListTC =
         handleServerNetworkError(error, dispatch);
       });
   };
+
+export const alluserReducertask = taskSlice.actions;
+export const userReducerTask = taskSlice.reducer;
+export const tasksThunks = { fetchTasksThunk, removeTasksThunk, addNewTasksThunk };

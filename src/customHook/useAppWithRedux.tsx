@@ -23,15 +23,15 @@ export const useAppWithRedux = () => {
   //fun remove task
   const removetask = useCallback(
     (id: string, idTodo: string) => {
-      dispatch(removeTasksThunk(id, idTodo));
+      dispatch(removeTasksThunk({id, idTodo}));
     },
     [dispatch],
   );
 
   //add new task
   const newAddTask = useCallback(
-    (value: string, id: string) => {
-      dispatch(addNewTasksThunk(value, id));
+    (title: string, todolistId: string) => {
+      dispatch(addNewTasksThunk({ title, todolistId }));
     },
     [dispatch],
   );

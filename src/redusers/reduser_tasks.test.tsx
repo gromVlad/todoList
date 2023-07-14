@@ -1,5 +1,5 @@
 import { Task, TaskPriorities, TaskStatusType } from "api/todolistApi";
-import { TaskType, taskSlice } from "./reduser_tasks";
+import { TaskType, taskSlice, tasksThunks } from "./reduser_tasks";
 
 
 describe("taskSlice reducer", () => {
@@ -23,7 +23,7 @@ describe("taskSlice reducer", () => {
       addedDate: "2022-01-01",
     };
 
-    const newState = taskSlice.reducer(initialState, taskSlice.actions.addTask({ task }));
+    const newState = taskSlice.reducer(initialState, tasksThunks.addNewTasksThunk.fulfilled({ task }, 'requestId', { task }));
 
     expect(newState).toEqual({ "1": [task] });
   });
@@ -44,7 +44,7 @@ describe("taskSlice reducer", () => {
 
     const state: TaskType = { "1": [task] };
 
-    const newState = taskSlice.reducer(state, taskSlice.actions.removeTask({ id: "1", idTodo: "1" }));
+    const newState = taskSlice.reducer(state, tasksThunks.removeTasksThunk.fulfilled({ id: "1", idTodo: "1" }, 'requestId', { id: "1", idTodo: "1" }));
 
     expect(newState).toEqual({ "1": [] });
   });
@@ -111,7 +111,7 @@ describe("taskSlice reducer", () => {
       },
     ];
 
-    const newState = taskSlice.reducer(initialState, taskSlice.actions.setTasks({ tasks, todolistId: "1" }));
+    const newState = taskSlice.reducer(initialState, tasksThunks.fetchTasksThunk.fulfilled({ tasks, todolistId: "1" }, 'requestId', 'todolistId1'));
 
     expect(newState).toEqual({ "1": tasks });
   });
