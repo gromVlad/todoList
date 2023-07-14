@@ -5,6 +5,7 @@ import { allActionsTodolist } from "./reduser_todolist";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppThunk } from "./ActionThunkDispatchType";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
+import { createAppAsyncThunk } from "./withAsyncThunk";
 
 
 export const initialState = {
@@ -29,7 +30,7 @@ const authSlice = createSlice({
     nullCaptchCreator: (state) => {
       state.urlCaptch = null;
     },
-  },
+  }
 });
 
 //export const { setIsLoggedInAC, setIsInitInAC, getCaptchCreator, nullCaptchCreator } = authSlice.actions;
@@ -56,6 +57,7 @@ export const loginTC = (data: LoginType): AppThunk => (dispatch) => {
     })
     .finally(() => dispatch(ActionsAppReducer.changeTackAppStatusAC({status: "succeeded"})));
 };
+
 
 export const initializeAppTC = (): AppThunk => (dispatch) => {
   dispatch(allActionsauthReducer.setIsInitInAC({isInit: false}));

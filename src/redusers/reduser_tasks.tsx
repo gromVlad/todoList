@@ -79,7 +79,7 @@ export const taskSlice = createSlice({
 //____Thunk____//
 
 //fetchTasksThunk
-const fetchTasksThunk = createAppAsyncThunk<{ tasks: Task[]; todolistId: string }, string>(
+export const fetchTasksThunk = createAppAsyncThunk<{ tasks: Task[]; todolistId: string }, string>(
   "tasks/fetchTasks",
   async (todolistId, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
