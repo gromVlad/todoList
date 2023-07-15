@@ -56,16 +56,6 @@ function App() {
         <ErrorSnackbar />
         <AppBar position="static" sx={{ backgroundColor: "#4caf50" }}>
           <Toolbar style={{ textAlign: "center", color: "black" }}>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              style={{ color: "black" }}
-            >
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               TodoList
             </Typography>
