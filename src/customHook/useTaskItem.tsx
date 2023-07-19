@@ -3,6 +3,19 @@ import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { Task, TaskStatusType } from "../api/todolistApi";
 
+
+/**
+
+A hook for creating state handlers for a task item, including event handlers for removing the task,
+changing the checkbox status, and changing the task title.
+@param {(id: string, idtodo: string) => void} removetask - A function to call when the task is to be removed.
+@param {(id: string, status: TaskStatusType, idTodo: string) => void} changeChekBox - A function to call when the checkbox status is changed.
+@param {(id: string, value: string, idTodo: string) => void} changeTaskTitle - A function to call when the task title is changed.
+@param {string} id - The ID of the task.
+@param {Task} element - The task object containing the task data.
+@returns {Object} An object containing state variables and event handlers for the task item.
+*/
+
 export const useTaskItem = (
   removetask: (id: string, idtodo: string) => void,
   changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void,
@@ -34,6 +47,12 @@ export const useTaskItem = (
     changeSpan,
   };
 };
+
+/**
+
+A hook for creating a styled component for a task item.
+@returns {Object} An object containing a styled Button component for use with a task item.
+*/
 
 export const useStyledTaskItem = () => {
   const StyledButton = styled(Button)(({ theme }) => ({

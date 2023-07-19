@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { TaskType, addNewTasksThunk ,removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
-import { useDispatchWithType, useSelectorWithType } from "../redusers/ActionThunkDispatchType";
+import { useDispatchWithType} from "../redusers/ActionThunkDispatchType";
 import {
   FitervalueType,
   addNewTodolistThunk,
@@ -13,9 +13,14 @@ import {
 } from "../redusers/reduser_todolist";
 import { TaskStatusType } from "../api/todolistApi";
 
+/**
+
+A custom hook that returns an object containing Redux state and action creator functions for managing TodoLists and tasks.
+@returns {object} An object containing TodoList and task-related state and action creator functions.
+*/
+
 export const useAppWithRedux = () => {
   const todolists = useSelector<AppRootStateType, TodoListTypeState[]>((state) => state.todolist);
-  const isLogin = useSelectorWithType<boolean>((state) => state.login.isLoggedIn);
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
 
   const dispatch = useDispatchWithType();

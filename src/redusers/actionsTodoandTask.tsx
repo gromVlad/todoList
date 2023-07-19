@@ -5,6 +5,7 @@ import { TaskType } from "./reduser_tasks";
 export type ActionsTodoandTaskClearType = {
   todoList: TodoListTypeState[]
   task: TaskType
+  
 }
 
 export const actionsTodoandTaskClear = createAction<ActionsTodoandTaskClearType>('clear-all-state')

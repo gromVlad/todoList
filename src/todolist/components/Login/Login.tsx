@@ -7,10 +7,11 @@ import FormGroup from "@mui/material/FormGroup";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useFormik } from "formik";
+import { FormikHelpers, useFormik } from "formik";
 import { useDispatchWithType, useSelectorWithType } from "../../../redusers/ActionThunkDispatchType";
 import { loginTC } from "../../../redusers/auth-reducer";
 import { Navigate } from "react-router";
+import { LoginType, ResponseTypeApI} from "api/todolistApi";
 
 type FormikErrorType = {
   email?: string;
@@ -48,15 +49,22 @@ export const Login = () => {
 
       return errors;
     },
-    onSubmit: (values) => {
-      dispatch(loginTC(values));
-      console.log(values);
-
-      formik.resetForm({
-        values: { email: "", password: "", rememberMe: false, captcha: "" },
-      });
+    onSubmit: (values: LoginType, formikHelpers: FormikHelpers<LoginType>) => {
+      dispatch(loginTC({ data: values}))
+      .unwrap()
+      .then()
+        .catch((data: ResponseTypeApI) => {
+          const { fieldsErrors } = data
+          // проверку на fieldsErrors
+          if (fieldsErrors) {
+          fieldsErrors.forEach(element => {
+            formikHelpers.setFieldError(element.field, element.error)
+          });
+        }
+      })
+        
     },
-  });
+});
 
   if (isLogin) {
     return <Navigate to={"/"} />;

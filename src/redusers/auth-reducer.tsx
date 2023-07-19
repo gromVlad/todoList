@@ -1,11 +1,12 @@
 import { ActionsAppReducer } from "./app-reducer";
 import { LoginType, captchaAPI, todolistAPI } from "../api/todolistApi";
 import { handleServerAppError, handleServerNetworkError } from "../utils/utils";
-import { allActionsTodolist } from "./reduser_todolist";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppThunk } from "./ActionThunkDispatchType";
 import { actionsTodoandTaskClear } from "./actionsTodoandTask";
 import { createAppAsyncThunk } from "./withAsyncThunk";
+import { thunkTryCatch } from "utils/thunkTryCatch";
+import { ResultCode } from "./reduser_todolist";
 
 
 export const initialState = {
@@ -30,70 +31,96 @@ const authSlice = createSlice({
     nullCaptchCreator: (state) => {
       state.urlCaptch = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginTC.fulfilled, (state, action) => {
+        state.isLoggedIn = action.payload.isLoggedIn;
+      })
+      .addCase(initializeAppTC.fulfilled, (state, action) => {
+        state.isLoggedIn = action.payload.isLoggedIn;
+      })
+      .addCase(logoutTC.fulfilled, (state, action) => {
+        state.isLoggedIn = false
+      })
   }
 });
 
-//export const { setIsLoggedInAC, setIsInitInAC, getCaptchCreator, nullCaptchCreator } = authSlice.actions;
 export const allActionsauthReducer = authSlice.actions
 export const authReducer = authSlice.reducer;
 
-// thunks
-export const loginTC = (data: LoginType): AppThunk => (dispatch) => {
-  dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading"}));
-  todolistAPI
-    .login(data)
-    .then((response) => {
-      if (response.data.resultCode === 0) {
-        dispatch(allActionsauthReducer.setIsLoggedInAC({isLoggedIn: true}));
+//__ thunks__//
+
+//login
+export const loginTC = createAppAsyncThunk< { isLoggedIn: boolean }, {data: LoginType}>(
+  "auth/login",
+  async ({data}, thunkAPI) => {
+    return thunkTryCatch(thunkAPI, async  () =>  {
+      const { dispatch, rejectWithValue } = thunkAPI;
+      const res = await todolistAPI.login(data)
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(allActionsauthReducer.nullCaptchCreator());
-      } else if (response.data.resultCode === 10) {
+        return { isLoggedIn: true };
+      } else if (res.data.resultCode === ResultCode.captcha) {
         dispatch(getCaptchThunk());
+        return rejectWithValue(null);
       } else {
-        handleServerAppError(response.data, dispatch);
+        const isShowAppError = !res.data.fieldsErrors.length
+        handleServerAppError(res.data, dispatch,isShowAppError);
+        return rejectWithValue(res.data);
       }
     })
-    .catch((error) => {
-      handleServerNetworkError(error, dispatch);
-    })
-    .finally(() => dispatch(ActionsAppReducer.changeTackAppStatusAC({status: "succeeded"})));
-};
+  },
+);
 
-
-export const initializeAppTC = (): AppThunk => (dispatch) => {
-  dispatch(allActionsauthReducer.setIsInitInAC({isInit: false}));
-  todolistAPI
-    .me()
-    .then((res) => {
-      if (res.data.resultCode === 0) {
-        dispatch(allActionsauthReducer.setIsLoggedInAC({ isLoggedIn: true }));
+//initializeApp
+export const initializeAppTC = createAppAsyncThunk<{ isLoggedIn: boolean }, void>(
+  "tasks/initializeApp",
+  async (_, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    try {
+      dispatch(allActionsauthReducer.setIsInitInAC({ isInit: false }));
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+      const res = await todolistAPI.me()
+      if (res.data.resultCode === ResultCode.success) {
+        return { isLoggedIn: true }
       } else {
-        handleServerAppError(res.data, dispatch);
+        handleServerAppError(res.data, dispatch,false);
+        return rejectWithValue(null);
       }
-    })
-    .catch((error) => {
+    } catch (error) {
       handleServerNetworkError(error, dispatch);
-    })
-    .finally(() => dispatch(allActionsauthReducer.setIsInitInAC({isInit: true})));
-};
+      return rejectWithValue(null);
+    } finally {
+    dispatch(allActionsauthReducer.setIsInitInAC({ isInit: true }))
+  }
+  },
+);
 
-export const logoutTC = (): AppThunk => (dispatch) => {
-  dispatch(ActionsAppReducer.changeTackAppStatusAC({status: "loading"}));
-  todolistAPI
-    .logout()
-    .then((res) => {
-      if (res.data.resultCode === 0) {
-        dispatch(allActionsauthReducer.setIsLoggedInAC({ isLoggedIn: false }));
+//logoutTC
+export const logoutTC = createAppAsyncThunk< void>(
+  "tasks/logout",
+  async (_, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    try {
+      dispatch(ActionsAppReducer.changeTackAppStatusAC({ status: "loading" }));
+      const res = await todolistAPI.logout()
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(ActionsAppReducer.changeTackAppStatusAC({status: "succeeded"}));
         dispatch(actionsTodoandTaskClear({task:{}, todoList:[]}));
+        return 
       } else {
         handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
       }
-    })
-    .catch((error) => {
+    } catch (error) {
       handleServerNetworkError(error, dispatch);
-    });
-};
+      return rejectWithValue(null);
+    }
+  },
+);
 
+//getCaptchThunk
 export const getCaptchThunk = ():AppThunk => {
   return async (dispatch) => {
     const resultCaptch = await captchaAPI.getCaptchUser();

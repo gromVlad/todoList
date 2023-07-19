@@ -2,6 +2,17 @@ import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 
+
+/**
+
+A hook for creating an editable span component with the ability to switch between
+displaying text and allowing the user to edit it.
+@param {string} title - The initial text to display in the span.
+@param {(value: string) => void} changeSpan - A function to call when the user has finished editing
+the span and the new value should be saved.
+@returns {Object} An object containing state variables and event handlers for the editable span.
+*/
+
 export const useEditableSpan = (title: string, changeSpan: (value: string) => void) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(title);
@@ -34,6 +45,12 @@ export const useEditableSpan = (title: string, changeSpan: (value: string) => vo
   };
 };
 
+
+/**
+
+A hook for creating a styled TextField component for use with useEditableSpan.
+@returns {Object} An object containing a styled TextField component for use with useEditableSpan.
+*/
 export const useStyledComponentEditableSpan = () => {
   const StyledTextField = styled(TextField)({
     "& .MuiInputBase-root": {

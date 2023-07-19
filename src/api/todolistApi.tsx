@@ -22,10 +22,15 @@ type DeleteTodolistResponseType = {
   data: {};
 };
 
+type FieldErrorType = {
+  error: string
+  field: string
+}
+
 export type ResponseTypeApI<Item = {}> = {
   resultCode: number;
   messages: Array<string>;
-  //fieldsErrors: Array<string>;
+  fieldsErrors: FieldErrorType[]
   data: Item;
 };
 
@@ -78,7 +83,7 @@ export type LoginType = {
   email: string;
   password: string;
   rememberMe: boolean;
-  captcha?: string;
+  captcha: string;
 };
 
 const instance = axios.create({
