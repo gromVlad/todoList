@@ -8,3 +8,5 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
   dispatch: ActionThunkDispatchType
   rejectValue: null | ResponseTypeApI
 }>()
+
+

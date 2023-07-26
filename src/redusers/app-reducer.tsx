@@ -1,5 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
-import { log } from "console";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
 
@@ -29,3 +28,7 @@ export const appSlice = createSlice({
 export const ActionsAppReducer = appSlice.actions;
 
 export const appReducerStatus = appSlice.reducer;
+
+
+
+
