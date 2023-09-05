@@ -4,7 +4,7 @@ import {
   RemoveType,
   ResultCode,
   SetTodolistsActionType,
-  fetchTodolistAddThunk,
+  fetchTodolistAddSagaAddThunk,
   fetchTodos,
 } from "./reduser_todolist";
 import { Task, TaskStatusType, todolistAPI } from "../api/todolistApi";

@@ -79,7 +79,7 @@ export const reorderTodolistsAC = (
     payload: { todolistId, putAfterItemId },
   } as const);
 
-type ReorderTodolistsACType = ReturnType<typeof reorderTodolistsAC>;
+export type ReorderTodolistsACType = ReturnType<typeof reorderTodolistsAC>;
 
 
 export const RemoveTodolistAC = (todolistId: string): RemoveType => {
@@ -188,6 +188,12 @@ export type ActionType =
   | ReorderTodolistsACType
   | RemoveALLType;
 
+export enum ResultCode {
+  OK = 0,
+  ERROr = 1,
+  ERROR_CAPTCHA = 10
+}
+/* 
 //__________thunk____________//
 export const reorderTodolistTC =
   (todolistId: string, putAfterItemId: string | null):any =>
@@ -199,10 +205,10 @@ export const reorderTodolistTC =
         if (response.data.resultCode === 0) {
           dispatch(reorderTodolistsAC(todolistId, putAfterItemId));
           dispatch(changeTackAppStatusAC("succeeded"));
-          //dispatch(fetchTodolistAddThunk);
+          //dispatch(fetchTodolistAddSagaAddThunk);
         } else {
           handleServerAppError(response.data, dispatch);
-          //dispatch(fetchTodolistAddThunk);
+          //dispatch(fetchTodolistAddSagaAddThunk);
         }
       })
       .catch((error) => {
@@ -210,13 +216,7 @@ export const reorderTodolistTC =
       });
   };
 
-export enum ResultCode {
-  OK = 0,
-  ERROr = 1,
-  ERROR_CAPTCHA = 10
-}
-
-export const fetchTodolistAddThunk = (): AppThunk => (dispatch: Dispatch) => {
+export const fetchTodolistAddSagaAddThunk = (): AppThunk => (dispatch: Dispatch) => {
   dispatch(changeTackAppStatusAC("loading"));
   todolistAPI
     .getTodolists()
@@ -229,7 +229,7 @@ export const fetchTodolistAddThunk = (): AppThunk => (dispatch: Dispatch) => {
     });
 }; 
 
-export const addNewTodolistThunk  = (title:string) =>  (dispatch: Dispatch) => {
+export const addNewTodolistSagaThunk  = (title:string) =>  (dispatch: Dispatch) => {
     dispatch(changeTackAppStatusAC('loading'));
     todolistAPI
       .createTodolist(title)
@@ -246,11 +246,11 @@ export const addNewTodolistThunk  = (title:string) =>  (dispatch: Dispatch) => {
       })
 }; 
 
-export const deleteTodolistThunk  = (todolistId: string) =>  (dispatch: Dispatch) => {
+export const deleteTodolistSagaThunk  = (todolistId: string) =>  (dispatch: Dispatch) => {
    dispatch(changeTackAppStatusAC("loading"));
     dispatch(ChangeEntityStatusTodoTitleAC(todolistId,true));
     todolistAPI
-      .deleteTodolist(todolistId)
+      .deleteTodolistSaga(todolistId)
       .then((res) => {
         if (res.data.resultCode === ResultCode.OK) {
           dispatch(RemoveTodolistAC(todolistId));
@@ -267,7 +267,7 @@ export const deleteTodolistThunk  = (todolistId: string) =>  (dispatch: Dispatch
 
 }; 
 
-export const changeTitleTodolistThunk =
+export const changeTitleTodolistSagaThunk =
   (todolistId: string, title: string) =>
   (dispatch: Dispatch) => {
     dispatch(changeTackAppStatusAC("loading"));
@@ -288,7 +288,7 @@ export const changeTitleTodolistThunk =
 
 export const fetchTodos =
   () => (dispatch: Dispatch<any>, getState: () => AppRootStateType) => {
-    dispatch(fetchTodolistAddThunk());
+    dispatch(fetchTodolistAddSagaAddThunk());
     const todos = getState().todolist;
     todos.forEach((todo) => dispatch(fetchTasksThunk(todo.id)));
-  };
+  }; */

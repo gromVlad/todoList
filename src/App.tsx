@@ -13,18 +13,17 @@ import { RequestStatusType } from "./redusers/app-reducer";
 import { ErrorSnackbar } from "./todolist/components/Snackbar/Snackbar";
 import { ContainerTodolist } from "./todolist/containerTodolist";
 import {
-  BrowserRouter,
   HashRouter,
   Navigate,
   Route,
-  Router,
   Routes
 } from "react-router-dom";
 import { Login } from "./todolist/components/Login/Login";
 import { useEffect } from "react";
 import { useDispatchWithType, useSelectorWithType } from "./redusers/ActionThunkDispatchType";
 import { initializeAppTC, logoutTC } from "./redusers/auth-reducer";
-import { fetchTodolistAddThunk, fetchTodos } from "./redusers/reduser_todolist";
+import { } from "./redusers/reduser_todolist";
+import { fetchTodolistAddSagaCall } from "./redusers/saga/todolistSaga";
 
 function App() {
   const status = useSelector<AppRootStateType, RequestStatusType>(
@@ -46,7 +45,7 @@ function App() {
   useEffect(() => {
     dispacth(initializeAppTC());
     if (isLogin) {
-      dispacth(fetchTodos());
+      dispacth(fetchTodolistAddSagaCall());
     }
   }, [dispacth,isLogin]);
 

@@ -45,7 +45,7 @@ export const CreateTodolist = () => {
 //--------------------------------------------------------
 const todolistId1 = "397da940-9bfa-43f7-8efe-a55d3af228cc";
 
-export const DeleteTodolist = () => {
+export const deleteTodolistSaga = () => {
   const [state, setState] = useState<any>(null);
   useEffect(() => {
     axios
@@ -129,12 +129,12 @@ export const GetTodolistsDAL = () => {
   );
 };
 
-export const DeleteTodolistDAL = () => {
+export const deleteTodolistSagaDAL = () => {
   const [state, setState] = useState<any>(null);
   const [stateValueId, setstateValueId] = useState<any>(null);
 
   const deleteTodo = () => {
-    todolistAPI.deleteTodolist(stateValueId).then((res) => {
+    todolistAPI.deleteTodolistSaga(stateValueId).then((res) => {
       setState(res.data);
     });
   };

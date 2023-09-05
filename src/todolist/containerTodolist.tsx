@@ -30,7 +30,7 @@ export const ContainerTodolist = () => {
     addTodolist,
     changeFilter,
     changeTodoTitle,
-    deleteTodolist,
+    deleteTodolistSaga,
   } = useAppWithRedux();
 
   if (!isLogin) {
@@ -58,7 +58,7 @@ export const ContainerTodolist = () => {
                     changeFilter={changeFilter}
                     newAddTask={newAddTask}
                     changeChekBox={changeChekBox}
-                    deleteTodolist={deleteTodolist}
+                    deleteTodolistSaga={deleteTodolistSaga}
                     changeTaskTitle={changeTaskTitle}
                     changeTodoTitle={changeTodoTitle}
                   />

@@ -2,7 +2,6 @@ import { useCallback, useEffect } from "react";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Task, TaskStatusType } from "../api/todolistApi";
-import { useDispatch } from "react-redux";
 import { fetchTasksThunk } from "../redusers/reduser_tasks";
 import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
 import { FitervalueType } from "../redusers/reduser_todolist";
@@ -12,7 +11,7 @@ export const useTodoList = (
   taskTodo: Task[],
   changeFilter: (value: FitervalueType, id: string) => void,
   id: string,
-  deleteTodolist: (id: string) => void,
+  deleteTodolistSaga: (id: string) => void,
   newAddTask: (value: string, id: string) => void,
   changeTodoTitle: (value: string, idTodo: string) => void
 ) => {
@@ -20,7 +19,7 @@ export const useTodoList = (
 
   useEffect(() => {
     dispatch(fetchTasksThunk(id));
-  }, []);
+  }, [dispatch,id]);
 
   const getFilterTodo = (filter: FitervalueType, todo: Task[]) => {
     switch (filter) {
@@ -45,7 +44,7 @@ export const useTodoList = (
 
   //fun delete Todolist
   const funRemoveTodolist = () => {
-    deleteTodolist(id);
+    deleteTodolistSaga(id);
   };
 
   //add new task

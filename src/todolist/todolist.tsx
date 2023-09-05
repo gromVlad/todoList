@@ -1,4 +1,4 @@
-import  {  memo, useEffect } from "react";
+import  {  memo} from "react";
 import style from './todolist.module.css'
 import { AddItemForm } from "./components/addItem/addItemForm";
 import { EditableSpan } from "./components/EditableSpan/EditableSpan";
@@ -6,12 +6,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TaskItem } from "./components/taskItem/taskItem";
 import { useStyledComponentTodolist, useTodoList } from "../customHook/useTodolist";
 import { Task, TaskStatusType } from "../api/todolistApi";
-import { FitervalueType, TodolistsTypes, reorderTodolistTC } from "../redusers/reduser_todolist";
+import { FitervalueType, TodolistsTypes,} from "../redusers/reduser_todolist";
 import { RequestStatusType } from "../redusers/app-reducer";
 import { AppRootStateType } from "../redusers/state";
 import { useSelector } from "react-redux";
 import { useDispatchWithType } from "../redusers/ActionThunkDispatchType";
-import { fetchTasksThunk } from "../redusers/reduser_tasks";
+import { reorderTodolistSagaCall } from "../redusers/saga/todolistSaga";
 
 
 type todolistType = {
@@ -21,7 +21,7 @@ type todolistType = {
   changeFilter: (value: FitervalueType, id: string) => void;
   newAddTask: (value: string, id: string) => void;
   changeChekBox: (id: string, status: TaskStatusType, idTodo: string) => void;
-  deleteTodolist: (id: string) => void;
+  deleteTodolistSaga: (id: string) => void;
   changeTaskTitle: (id: string, value: string, idTodo: string) => void;
   changeTodoTitle: (value: string, idTodo: string) => void;
 };
@@ -48,7 +48,7 @@ export const Todolist = memo((props: todolistType) => {
   props.taskTodo,
   props.changeFilter,
   props.todo.id,
-  props.deleteTodolist,
+  props.deleteTodolistSaga,
   props.newAddTask,
   props.changeTodoTitle,
 )
@@ -77,7 +77,7 @@ export const Todolist = memo((props: todolistType) => {
     event.preventDefault();
     const sourceTodoId = event.dataTransfer.getData("text/plain");
     const targetTodoId = props.todo.id;
-    dispatch(reorderTodolistTC(sourceTodoId, targetTodoId))
+    dispatch(reorderTodolistSagaCall(sourceTodoId, targetTodoId))
   };
 
 

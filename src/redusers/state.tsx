@@ -2,11 +2,13 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { ActionTypeTasK, userReducerTask } from "./reduser_tasks";
 import { ActionType, userReducerTodolist } from "./reduser_todolist";
 import thunk, { ThunkAction } from "redux-thunk";
-import { ActionsAppReducerStatusType, appReducerStatus } from "./app-reducer";
+import {appReducerStatus } from "./app-reducer";
 import { authReducer } from "./auth-reducer";
+import createSagaMiddleware from 'redux-saga'
+import { all } from "redux-saga/effects";
+import { todoListSaga } from "./saga/todolistSaga";
 
-// объединяя reducer-ы с помощью combineReducers,
-// мы задаём структуру нашего единственного объекта-состояния
+
 const rootReducer = combineReducers({
   tasks: userReducerTask,
   todolist: userReducerTodolist,
@@ -14,16 +16,21 @@ const rootReducer = combineReducers({
   login:authReducer
 });
 
-// непосредственно создаём store
-export const store = createStore(rootReducer,applyMiddleware(thunk));
+const sagaMiddleware = createSagaMiddleware()
+export const store = createStore(rootReducer, applyMiddleware(thunk, sagaMiddleware));
 
-// определить автоматически тип всего объекта состояния
+sagaMiddleware.run(mySaga)
+
+function* mySaga() {
+  yield all([
+    todoListSaga()
+  ]);
+}
+
 export type AppRootStateType = ReturnType<typeof rootReducer>
 
-//вся типизация actions
 export type AllActionsType = ActionType | ActionTypeTasK 
-
-//универсальная типизация thunk for thunk 
+ 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateType,

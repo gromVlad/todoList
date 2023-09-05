@@ -8,20 +8,6 @@ export type TodolistType = {
   title: string;
 };
 
-type UpdateTodolistResponseType = {
-  resultCode: number;
-  messages: Array<string>;
-  fieldsErrors: Array<string>;
-  data: {};
-};
-
-type DeleteTodolistResponseType = {
-  resultCode: number;
-  messages: Array<string>;
-  fieldsErrors: Array<string>;
-  data: {};
-};
-
 export type ResponseTypeApI<Item={}> = {
   resultCode: number;
   messages: Array<string>;
@@ -91,21 +77,23 @@ const instance = axios.create({
 });
 
 export const todolistAPI = {
-  login(loginBox: LoginType) {
+  login(loginBox: LoginType): Promise<AxiosResponse<ResponseTypeApI<{ id: number }>>> {
     const promise = instance.post<ResponseTypeApI<{id:number}>>(`auth/login`, 
       loginBox,
     );
     return promise;
   },
-  me(){
+  me(): Promise<AxiosResponse<ResponseTypeApI<{ id: number, email: string, login: string }>>>{
     const promise = instance.get<ResponseTypeApI<{id:number,email:string,login:string}>>(`auth/me`);
     return promise;
   },
-  logout(){
+  logout(): Promise<AxiosResponse<ResponseTypeApI>>{
     const promise = instance.delete<ResponseTypeApI>(`auth/login`);
     return promise;
   },
-  updateTodolist(todolistId: string, title: string) {
+  updateTodolist(todolistId: string, title: string): Promise<AxiosResponse<
+    ResponseTypeApI,
+    AxiosResponse<ResponseTypeApI>>>{
     const promise = instance.put<
       ResponseTypeApI,
       AxiosResponse<ResponseTypeApI>,
@@ -115,17 +103,17 @@ export const todolistAPI = {
     });
     return promise;
   },
-  getTodolists() {
+  getTodolists(): Promise<AxiosResponse<Array<TodolistType>>> {
     const promise = instance.get<Array<TodolistType>>("todo-lists");
     return promise;
   },
-  deleteTodolist(todolistId: string) {
+  deleteTodolistSaga(todolistId: string): Promise<AxiosResponse<ResponseTypeApI>> {
     const promise = instance.delete<ResponseTypeApI>(
       `todo-lists/${todolistId}`
     );
     return promise;
   },
-  createTodolist(title: string) {
+  createTodolist(title: string): Promise<AxiosResponse<ResponseTypeApI<{ item: TodolistType }>>>  {
     const promise = instance.post<ResponseTypeApI<{ item: TodolistType }>>(
       "todo-lists",
       {
@@ -135,28 +123,28 @@ export const todolistAPI = {
     return promise;
   },
 
-  reorder(todolistId: string, putAfterItemId: string | null) {
+  reorder(todolistId: string, putAfterItemId: string | null): Promise<AxiosResponse<ResponseTypeApI>> {
     return instance.put<ResponseTypeApI>(`/todo-lists/${todolistId}/reorder`, {
       putAfterItemId,
     });
   },
 
   //---task
-  getTask(todolistId: string) {
+  getTask(todolistId: string): Promise<AxiosResponse<TaskTodoType>> {
     const promise = instance.get<TaskTodoType>(
       `todo-lists/${todolistId}/tasks`
     );
     return promise;
   },
 
-  deleteTask(todolistId: string, taskId: string) {
+  deleteTask(todolistId: string, taskId: string): Promise<AxiosResponse<ResponseTypeApI>> {
     const promise = instance.delete<ResponseTypeApI>(
       `todo-lists/${todolistId}/tasks/${taskId}`
     );
     return promise;
   },
 
-  createTask(todolistId: string, title: string) {
+  createTask(todolistId: string, title: string): Promise<AxiosResponse<ResponseTypeApI<{ item: Task }>>> {
     const promise = instance.post<ResponseTypeApI<{ item: Task }>>(
       `todo-lists/${todolistId}/tasks`,
       {
@@ -166,7 +154,7 @@ export const todolistAPI = {
     return promise;
   },
 
-  updateTask(todolistId: string, taskId: string, objects: PutTypeTask) {
+  updateTask(todolistId: string, taskId: string, objects: PutTypeTask): Promise<AxiosResponse<ResponseTypeApI<{ item: PutTypeTask }>>>{
     const promise = instance.put<ResponseTypeApI<{ item: PutTypeTask }>>(
       `todo-lists/${todolistId}/tasks/${taskId}`,
       objects
@@ -178,7 +166,7 @@ export const todolistAPI = {
     todolistId: string,
     taskId: string,
     putAfterItemId: string | null
-  ) {
+  ): Promise<AxiosResponse<ResponseTypeApI>> {
     return instance.put<ResponseTypeApI>(
       `/todo-lists/${todolistId}/tasks/${taskId}/reorder`,
       {
@@ -198,7 +186,7 @@ const instance2 = axios.create({
 });
 
 export const captchaAPI = {
-  getCaptchUser() {
+  getCaptchUser(): Promise<AxiosResponse> {
     return instance2.put(
       `security/get-captcha-url`
     );

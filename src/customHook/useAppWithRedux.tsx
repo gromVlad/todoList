@@ -1,27 +1,22 @@
-import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { TaskType, addNewTasksThunk, removeTackAC, removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
+import { useCallback} from "react";
+import { useSelector } from "react-redux";
+import { TaskType, addNewTasksThunk,removeTasksThunk, updateTask } from "../redusers/reduser_tasks";
 import { AppRootStateType } from "../redusers/state";
-import { useDispatchWithType, useSelectorWithType } from "../redusers/ActionThunkDispatchType";
-import { AddTodoTypeAC, ChangeTodoFilterAC, ChangeTodoTitleAC, FitervalueType, RemoveTodolistAC, TodolistsTypes, addNewTodolistThunk, changeTitleTodolistThunk, deleteTodolistThunk, fetchTodolistAddThunk, fetchTodos } from "../redusers/reduser_todolist";
+import { useDispatchWithType} from "../redusers/ActionThunkDispatchType";
+
 import { TaskStatusType } from "../api/todolistApi";
+import { ChangeTodoFilterAC, FitervalueType, TodolistsTypes } from "../redusers/reduser_todolist";
+import { addNewTodolistSagaCall, changeTitleTodolistSagaCall, deleteTodolistSagaCall } from "../redusers/saga/todolistSaga";
 
 export const useAppWithRedux = () => {
   const todolists = useSelector<AppRootStateType, TodolistsTypes[]>(
     (state) => state.todolist
   );
-  const isLogin = useSelectorWithType<boolean>(
-    (state) => state.login.isLoggedIn
-  );
+ 
   const tasks = useSelector<AppRootStateType, TaskType>((state) => state.tasks);
 
   const dispatch = useDispatchWithType();
 
-  // useEffect(() => {
-  //   if (isLogin ) {
-  //     dispatch(fetchTodos());
-  //   }
-  // }, [dispatch, isLogin]);
 
   // task----------------------------
   //fun remove task
@@ -59,9 +54,9 @@ export const useAppWithRedux = () => {
 
   //--todolist---------------------
   //delete todolist
-  const deleteTodolist = useCallback(
+  const deleteTodolistSaga = useCallback(
     (idTodo: string) => {
-      dispatch(deleteTodolistThunk(idTodo));
+      dispatch(deleteTodolistSagaCall(idTodo));
     },
     [dispatch]
   );
@@ -69,7 +64,7 @@ export const useAppWithRedux = () => {
   //change task title
   const changeTodoTitle = useCallback(
     (value: string, idTodo: string) => {
-      dispatch(changeTitleTodolistThunk(idTodo, value));
+      dispatch(changeTitleTodolistSagaCall(idTodo, value));
     },
     [dispatch]
   );
@@ -77,7 +72,7 @@ export const useAppWithRedux = () => {
   //add new todolist
   const addTodolist = useCallback(
     (title: string) => {
-      dispatch(addNewTodolistThunk(title));
+      dispatch(addNewTodolistSagaCall(title));
     },
     [dispatch]
   );
@@ -100,6 +95,6 @@ export const useAppWithRedux = () => {
     addTodolist,
     changeFilter,
     changeTodoTitle,
-    deleteTodolist,
+    deleteTodolistSaga,
   };
 }
