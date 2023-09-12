@@ -5,7 +5,7 @@ import { handleServerAppErrorSaga, handleServerNetworkErrorSaga } from "../../ut
 import { AxiosResponse } from "axios";
 import { ResponseTypeApI, TodolistType, todolistAPI } from "../../api/todolistApi";
 
-function* fetchTodolistAddSaga() {
+export function* fetchTodolistAddSaga() {
   try {
     yield put(changeTackAppStatusAC("loading"));
     const res: AxiosResponse<Array<TodolistType>> = yield call(todolistAPI.getTodolists);
